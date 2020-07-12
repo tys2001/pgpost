@@ -1,0 +1,25 @@
+<div class="related">
+  <% if (data.article.category.categoryId ==="others") { %>
+  <% for (let category of data.setting.categories) { %>
+  <div><%= category.categoryName %>の記事</div>
+  <div class="article-link-list responsive-grid-column">
+    <% for (let article of category.articles) { %>
+    <a class="article-link" href="/<%- article.articleId %>">
+      <div class="article-link-image" style="background-image: url(<%=article.captionImage%>)"></div>
+      <div class="article-link-title"><%= article.title %></div>
+    </a>
+    <% } %>
+  </div>
+  <% } %>
+  <% } else { %>
+  <div>関連記事</div>
+  <div class="article-link-list responsive-grid-column">
+    <% for (let relatedArticle of data.article.relatedArticles) { %>
+    <a class="article-link" href="/<%- relatedArticle.articleId %>">
+      <div class="article-link-image" style="background-image: url(<%=relatedArticle.captionImage%>)"></div>
+      <div class="article-link-title"><%= relatedArticle.title %></div>
+    </a>
+    <% } %>
+  </div>
+  <% } %>
+</div>
