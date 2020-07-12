@@ -70,10 +70,11 @@ body {
 
 .article-link-list {
   display: grid;
+  margin-bottom: 10px;
 }
 
 .article-link {
-  padding: 10px;
+  padding: 5px;
   text-decoration: none;
   color: inherit;
   border-radius: 5px;
