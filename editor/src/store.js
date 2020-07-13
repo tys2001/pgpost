@@ -64,6 +64,7 @@ export default {
         await firestore.collection("media").doc(file.name)
           .set({
             fileName: file.name,
+            mediaUrl: `/media/${file.name}`,
             storageUrl: storageUrl
           });
         this.loadMedia();

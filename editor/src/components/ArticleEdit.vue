@@ -32,7 +32,9 @@
         />
       </b-input-group>
       <b-input-group prepend="キャプション画像">
-        <ImageSelect v-model="draftItem.captionImage" />
+        <div class="thumbnail" :style="{ backgroundImage: `url(${draftItem.captionImage})` }" />
+        <b-button @click="$refs.imageSelectModal.show()" variant="primary">select</b-button>
+        <ImageSelectModal ref="imageSelectModal" v-model="draftItem.captionImage" />
       </b-input-group>
       <b-button @click="onClickEditContent" variant="primary" block>本文を編集する</b-button>
       <b-button @click="onClickPreView" variant="primary" block>プレビュー</b-button>
@@ -44,11 +46,11 @@
 </template>
 
 <script>
-import ImageSelect from "@/components/ImageSelect.vue";
+import ImageSelectModal from "@/components/ImageSelectModal.vue";
 import MarkdownEditor from "@/components/MarkdownEditor.vue";
 export default {
   components: {
-    ImageSelect,
+    ImageSelectModal,
     MarkdownEditor
   },
   data() {
@@ -117,5 +119,14 @@ export default {
 <style scoped>
 .edit-area > * {
   margin-bottom: 10px;
+}
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  background-color: lightgray;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
 }
 </style>

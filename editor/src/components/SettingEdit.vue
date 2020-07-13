@@ -4,7 +4,9 @@
       <b-input v-model="draftItem.siteName" />
     </b-input-group>
     <b-input-group prepend="トップ画像">
-      <ImageSelect v-model="draftItem.topImage" />
+      <div class="thumbnail" :style="{ backgroundImage: `url(${draftItem.topImage})` }" />
+      <b-button @click="$refs.imageSelectModal.show()" variant="primary">select</b-button>
+      <ImageSelectModal ref="imageSelectModal" v-model="draftItem.topImage" />
     </b-input-group>
     <div>
       <b-button v-b-toggle.editCategory block variant="primary">カテゴリ編集</b-button>
@@ -79,10 +81,10 @@
 </template>
 
 <script>
-import ImageSelect from "@/components/ImageSelect.vue";
+import ImageSelectModal from "@/components/ImageSelectModal.vue";
 export default {
   components: {
-    ImageSelect
+    ImageSelectModal
   },
   data() {
     return {
@@ -169,5 +171,14 @@ export default {
 <style scoped>
 .form-list > * {
   margin-bottom: 10px;
+}
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  background-color: lightgray;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
 }
 </style>

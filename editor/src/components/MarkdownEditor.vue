@@ -7,19 +7,24 @@
       <div class="tool-icon" @click="exit">
         <b-icon icon="door-closed"></b-icon>
       </div>
-      <div class="tool-icon">
+      <div class="tool-icon" @click="$refs.imageSelectModal.show()">
         <b-icon icon="image"></b-icon>
       </div>
       <div class="message">{{message}}</div>
     </div>
     <textarea v-model="markdown" class="writer" />
     <div v-html="html" class="viewer content-body"></div>
+    <ImageSelectModal ref="imageSelectModal" @change="onSelectImage" />
   </div>
 </template>
 
 <script>
+import ImageSelectModal from "@/components/ImageSelectModal.vue";
 import marked from "marked";
 export default {
+  components: {
+    ImageSelectModal
+  },
   props: {
     articleId: String
   },
@@ -29,7 +34,8 @@ export default {
       shown: false,
       markdown: "",
       html: "",
-      message: ""
+      message: "",
+      insertImageUrl: ""
     };
   },
   methods: {
@@ -44,6 +50,9 @@ export default {
     async onClickSave() {
       await this.store.saveContent(this.articleId, { markdown: this.markdown });
       this.message = `Saved at ${new Date().toLocaleString()}`;
+    },
+    onSelectImage(imageUrl) {
+      this.markdown += `![](${imageUrl})`;
     },
     onKeyDown() {
       if (event.ctrlKey) {
