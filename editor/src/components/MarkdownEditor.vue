@@ -12,7 +12,7 @@
       </div>
       <div class="message">{{message}}</div>
     </div>
-    <textarea v-model="markdown" class="writer" />
+    <textarea v-model="markdown" ref="markdownInput" class="writer" />
     <div v-html="html" class="viewer content-body"></div>
     <ImageSelectModal ref="imageSelectModal" @change="onSelectImage" />
   </div>
@@ -52,7 +52,12 @@ export default {
       this.message = `Saved at ${new Date().toLocaleString()}`;
     },
     onSelectImage(imageUrl) {
-      this.markdown += `![](${imageUrl})`;
+      const len = this.markdown.length;
+      const pos = this.$refs.markdownInput.selectionStart;
+      const before = this.markdown.substr(0, pos);
+      const word = `![](${imageUrl})`;
+      const after = this.markdown.substr(pos, len);
+      this.markdown = before + word + after;
     },
     onKeyDown() {
       if (event.ctrlKey) {
