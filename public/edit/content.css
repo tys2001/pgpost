@@ -9,3 +9,7 @@
   margin: 0 auto;
   max-width: 100%;
 }
+
+.content-body {
+  line-height: 28px;
+}

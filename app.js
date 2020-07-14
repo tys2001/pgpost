@@ -1,6 +1,5 @@
 const express = require("express");
 const firebase = require("firebase");
-const marked = require('marked');
 const fs = require('fs');
 const https = require('https');
 
@@ -61,8 +60,7 @@ renderPage = async (articleId, res) => {
 
   const articleContentDoc = await firestore.collection("article-content").doc(articleId).get();
   if (!articleContentDoc.exists) res.redirect('/404');
-  const markdown = articleContentDoc.data().markdown;
-  data.article.htmlContent = marked(markdown);
+  data.article.htmlContent = articleContentDoc.data().html;
 
   for (let category of data.setting.categories) {
     if (category.categoryId === data.article.categoryId) {

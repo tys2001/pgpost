@@ -21,6 +21,7 @@
 <script>
 import ImageSelectModal from "@/components/ImageSelectModal.vue";
 import marked from "marked";
+import hljs from "highlight.js";
 export default {
   components: {
     ImageSelectModal
@@ -33,10 +34,17 @@ export default {
       store: this.$store,
       shown: false,
       markdown: "",
-      html: "",
       message: "",
       insertImageUrl: ""
     };
+  },
+  created() {
+    marked.setOptions({
+      langPrefix: "hljs language-",
+      highlight: (code, lang) => {
+        return hljs.highlightAuto(code, [lang]).value;
+      }
+    });
   },
   methods: {
     async open() {
@@ -48,7 +56,10 @@ export default {
       this.shown = false;
     },
     async onClickSave() {
-      await this.store.saveContent(this.articleId, { markdown: this.markdown });
+      await this.store.saveContent(this.articleId, {
+        markdown: this.markdown,
+        html: this.html
+      });
       this.message = `Saved at ${new Date().toLocaleString()}`;
     },
     onSelectImage(imageUrl) {
@@ -68,14 +79,13 @@ export default {
       }
     }
   },
-  watch: {
-    markdown(newValue) {
-      this.html = marked(newValue);
+  computed: {
+    html() {
+      return marked(this.markdown);
     }
   }
 };
 </script>
-
 <style scoped>
 .mde-container {
   width: 100%;
