@@ -1,15 +1,33 @@
+.content-body {
+  font-size: 14px;
+  line-height: 28px;
+}
+
+.content-body ul,
+.content-body p {
+  margin: 10px 0;
+}
+
+.content-body ul {
+  padding-left: 30px;
+}
+
 .content-body h2 {
+  font-size: 28px;
+  font-weight: bold;
   padding: 10px;
   background-color: lightblue;
   border-left: 10px solid #009;
-  margin: 40px 0 0;
+  margin: 10px 0;
 }
 
 .content-body h3 {
+  font-size: 20px;
+  font-weight: bold;
   padding: 5px;
   border-left: 5px solid #009;
   border-bottom: 1px solid #009;
-  margin: 30px 0 0;
+  margin: 10px 0;
 }
 
 .content-body p > img {
@@ -18,6 +36,7 @@
   max-width: 100%;
 }
 
-.content-body {
-  line-height: 28px;
+.content-body *+h2,
+.content-body *+h3 {
+  margin-top: 30px;
 }

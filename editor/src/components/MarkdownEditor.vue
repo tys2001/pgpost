@@ -12,8 +12,22 @@
       </div>
       <div class="message">{{message}}</div>
     </div>
-    <textarea v-model="markdown" ref="markdownInput" class="writer" />
-    <div v-html="html" class="viewer content-body"></div>
+    <textarea
+      v-model="markdown"
+      ref="markdownInput"
+      class="writer"
+      @scroll="onScroll"
+      @mousemove="scrollTarget=null"
+      @touchmove="scrollTarget=null"
+    />
+    <div
+      v-html="html"
+      ref="htmlPreview"
+      class="viewer content-body"
+      @scroll="onScroll"
+      @mousemove="scrollTarget=null"
+      @touchmove="scrollTarget=null"
+    ></div>
     <ImageSelectModal ref="imageSelectModal" @change="onSelectImage" />
   </div>
 </template>
@@ -35,7 +49,9 @@ export default {
       shown: false,
       markdown: "",
       message: "",
-      insertImageUrl: ""
+      insertImageUrl: "",
+      scrollTarget: null,
+      abortScroll: false
     };
   },
   created() {
@@ -70,6 +86,23 @@ export default {
       const after = this.markdown.substr(pos, len);
       this.markdown = before + word + after;
     },
+    onScroll() {
+      const moved = event.target;
+      if (moved === this.$refs.markdownInput) {
+        if (this.scrollTarget === this.$refs.markdownInput) return;
+        this.scrollTarget = this.$refs.htmlPreview;
+      } else {
+        if (this.scrollTarget === this.$refs.htmlPreview) return;
+        this.scrollTarget = this.$refs.markdownInput;
+      }
+      const scrollRatio =
+        moved.scrollTop / (moved.scrollHeight - moved.clientHeight);
+      this.scrollTarget.scrollTo(
+        0,
+        scrollRatio *
+          (this.scrollTarget.scrollHeight - this.scrollTarget.clientHeight)
+      );
+    },
     onKeyDown() {
       if (event.ctrlKey) {
         if (event.key === "s") {
@@ -83,6 +116,14 @@ export default {
     html() {
       return marked(this.markdown);
     }
+  },
+  watch: {
+    // scrollTarget(val) {
+    //   if (!val) return;
+    //   setTimeout(() => {
+    //     this.scrollTarget = null;
+    //   }, 100);
+    // }
   }
 };
 </script>
@@ -138,6 +179,7 @@ export default {
   padding: 20px;
   border: none;
   border-right: 1px solid lightgray;
+  font-size: 14px;
 }
 .writer:focus {
   outline: none;
