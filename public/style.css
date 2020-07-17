@@ -18,29 +18,29 @@ body {
 }
 
 .navigation {
-  height: 50px;
+  height: 40px;
   display: flex;
   width: 100%;
   text-align: center;
-  line-height: 50px;
+  line-height: 40px;
+  font-size: 80%;
 }
 
 .header {
-  height: 60px;
+  height: 30px;
   padding: 20px 5%;
 }
 
 .header > a {
-  font-size: 200%;
+  font-size: 150%;
 }
 
 .navigation > a {
   width: 100%;
-  border-radius: 5px;
 }
 
 .navigation > a:hover {
-  background-color: lightgray;
+  background-color: aliceblue;
 }
 
 .top-image {
@@ -48,13 +48,15 @@ body {
 }
 
 .content {
-  padding: 40px 2%;
+  padding: 20px 2%;
 }
 
 .content-title {
-  font-size: 200%;
-  margin-bottom: 20px;
+  font-size: 160%;
+  font-weight: bold;
+  margin: 0 0 20px;
   border-bottom: 1px solid lightgray;
+  padding: 10px 0;
 }
 
 .eyecatch-image {
@@ -81,7 +83,7 @@ body {
 }
 
 .article-link:hover {
-  background-color: lightgray;
+  background-color: aliceblue;
 }
 
 .article-link-image {
@@ -101,7 +103,7 @@ body {
 
 .footer {
   height: 100px;
-  background-color: gray;
+  background-color: black;
 }
 
 /* wide */
