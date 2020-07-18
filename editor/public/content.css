@@ -3,7 +3,11 @@
   line-height: 28px;
 }
 
-.content-body ul,
+.content-body ul {
+  margin: 0
+}
+
+
 .content-body p {
   margin: 10px 0;
 }
@@ -13,7 +17,7 @@
 }
 
 .content-body h2 {
-  font-size: 28px;
+  font-size: 20px;
   font-weight: bold;
   padding: 10px;
   background-color: lightblue;
