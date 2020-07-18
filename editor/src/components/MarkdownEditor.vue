@@ -28,7 +28,7 @@
       @mousemove="scrollTarget=null"
       @touchmove="scrollTarget=null"
     ></div>
-    <ImageSelectModal ref="imageSelectModal" @change="onSelectImage" />
+    <ImageSelectModal ref="imageSelectModal" @input="onSelectImage" />
   </div>
 </template>
 

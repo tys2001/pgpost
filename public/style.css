@@ -48,7 +48,8 @@ body {
 }
 
 .content {
-  padding: 20px 2%;
+  padding: 0 2%;
+  margin: 20px 0;
 }
 
 .content-title {
@@ -67,7 +68,8 @@ body {
 }
 
 .related {
-  padding: 20px 2%;
+  padding: 0 2%;
+  margin: 20px 0;
 }
 
 .article-link-list {

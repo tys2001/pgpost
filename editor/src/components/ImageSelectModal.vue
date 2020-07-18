@@ -16,7 +16,7 @@
         :key="item.fileName"
         class="thumbnail-outline"
         :selected="selectedMedia === item"
-        @click="selectedMedia = item"
+        @click="onClickMedia(item)"
       >
         <div class="thumbnail" :style="{ backgroundImage: `url(${item.storageUrl})` }">
           <div class="square" />
@@ -34,18 +34,27 @@ export default {
   data() {
     return {
       store: this.$store,
-      selectedMedia: null,
-      isFileDropping: false
+      selectedMedia: null
     };
   },
   methods: {
     show() {
       this.selectedMedia = null;
+      for (let media of this.store.media) {
+        if (media.storageUrl === this.value) {
+          this.selectedMedia = media;
+        }
+      }
       this.$refs.modal.show();
     },
+    onClickMedia(item) {
+      if (this.selectedMedia === item) this.selectedMedia = null;
+      else this.selectedMedia = item;
+    },
     onClickOk() {
-      this.$emit("input", this.selectedMedia.storageUrl);
-      this.$emit("change", this.selectedMedia.storageUrl);
+      if (this.selectedMedia)
+        this.$emit("input", this.selectedMedia.storageUrl);
+      else this.$emit("input", "");
     },
     onUploadFileChange() {
       for (let file of this.$refs.uploadFile.files) this.store.addMedia(file);

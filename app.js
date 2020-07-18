@@ -62,6 +62,9 @@ renderPage = async (articleId, res) => {
   if (!articleContentDoc.exists) res.redirect('/404');
   data.article.htmlContent = articleContentDoc.data().html;
 
+  const commonContentDoc = await firestore.collection("article-content").doc("common-bottom").get();
+  data.setting.common = commonContentDoc.data().html;
+
   for (let category of data.setting.categories) {
     if (category.categoryId === data.article.categoryId) {
       data.article.category = category;
@@ -96,5 +99,5 @@ renderPage = async (articleId, res) => {
 
 
 const server = app.listen(process.env.PORT || 3000, () => {
-  console.log("Node.js is listening to PORT:" + server.address().port);
+  console.log(`Node.js is running at http://localhost:${server.address().port}`);
 });
