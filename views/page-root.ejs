@@ -10,7 +10,7 @@
   <link rel="icon" href="/media/icon-192x192.png" sizes="192x192">
   <link rel="apple-touch-icon-precomposed" href="/media/icon-180x180.png">
   <meta name="msapplication-TileImage" content="/media/icon-270x270.png">
-  <title><%= data.setting.siteName %></title>
+  <title><%= (data.article.title?(data.article.title + " | "):"") + data.setting.siteName %></title>
   <link rel="stylesheet" type="text/css" href="/style.css?<%= data.timestamp %>">
   <link rel="stylesheet" type="text/css" href="/edit/content.css?<%= data.timestamp %>">
   <link rel="stylesheet" type="text/css" href="/edit/code-highlight.css?<%= data.timestamp %>">
@@ -18,11 +18,8 @@
 
 <body>
   <%- include("./header.ejs", data) %>
-  <%- include("./navigation.ejs", data) %>
-  <img class="top-image" src="<%= data.setting.topImage %>" />
-  <%- include("./content.ejs", data) %>
-  <%- include("./related.ejs", data) %>
-  <%- include("./common-bottom.ejs", data) %>
+  <%- include("./main.ejs", data) %>
+  <%- include("./aside.ejs", data) %>
   <%- include("./footer.ejs", data) %>
 </body>
 

@@ -1,6 +1,7 @@
-<div class="related">
-  <% if (data.article.category.categoryId ==="others") { %>
+<aside>
+  <% if (data.article.category.relation === "all_categories") { %>
   <% for (let category of data.setting.categories) { %>
+  <% if (category.relation === "same_categories") { %>
   <div><%= category.categoryName %>の記事</div>
   <div class="article-link-list responsive-grid-column">
     <% for (let article of category.articles) { %>
@@ -11,7 +12,9 @@
     <% } %>
   </div>
   <% } %>
-  <% } else { %>
+  <% } %>
+  <% } else if (data.article.category.relation === "same_categories") { %>
+  <% if (data.article.relatedArticles.length > 0) { %>
   <div>関連記事</div>
   <div class="article-link-list responsive-grid-column">
     <% for (let relatedArticle of data.article.relatedArticles) { %>
@@ -22,4 +25,6 @@
     <% } %>
   </div>
   <% } %>
-</div>
+  <% } %>
+  <div class="content-body"><%- data.setting.common %></div>
+</aside>

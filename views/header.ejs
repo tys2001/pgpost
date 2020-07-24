@@ -1,1 +1,9 @@
-<div class="header"><a href="/"><%= data.setting.siteName %></a></div>
+<header class="header">
+  <div class="header-title"><a href="/"><%= data.setting.siteName %></a></div>
+  <nav class="navigation">
+    <% for (let menuItem of data.setting.menuItems) { %>
+    <a href="<%- menuItem.href %>"><%= menuItem.label %></a>
+    <% } %>
+  </nav>
+  <img class="top-image" src="<%= data.setting.topImage %>" />
+</header>

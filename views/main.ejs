@@ -1,0 +1,11 @@
+<main>
+  <article>
+    <% if (data.article.title) { %>
+    <h1 class="content-title"><%= data.article.title %></h1>
+    <% } %>
+    <% if (data.article.captionImage) { %>
+    <img class="eyecatch-image" src="<%= data.article.captionImage %>" />
+    <% } %>
+    <div class="content-body"><%- data.article.htmlContent %></div>
+  </article>
+</main>

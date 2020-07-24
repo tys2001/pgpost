@@ -71,18 +71,20 @@ renderPage = async (articleId, res) => {
     }
   }
 
-  if (data.article.category.categoryId === "others") {
+  if (data.article.category.relation === "all_categories") {
     for (let category of data.setting.categories) {
-      const categoryArticlesDoc = await firestore.collection("articles")
-        .where("categoryId", "==", category.categoryId)
-        //.orderBy("articleId").limit(8)
-        .get();
-      category.articles = [];
-      categoryArticlesDoc.forEach(doc => {
-        category.articles.push(doc.data());
-      });
+      if (category.relation === "same_categories") {
+        const categoryArticlesDoc = await firestore.collection("articles")
+          .where("categoryId", "==", category.categoryId)
+          //.orderBy("articleId").limit(8)
+          .get();
+        category.articles = [];
+        categoryArticlesDoc.forEach(doc => {
+          category.articles.push(doc.data());
+        });
+      }
     }
-  } else {
+  } else if (data.article.category.relation === "same_categories") {
     const relatedArticlesDoc = await firestore.collection("articles")
       .where("categoryId", "==", data.article.categoryId)
       //.orderBy("articleId").limit(8)

@@ -4,6 +4,9 @@
       <b-tab title="ページ" active>
         <ArticleEdit />
       </b-tab>
+      <b-tab title="カテゴリ">
+        <CategoryEdit />
+      </b-tab>
       <b-tab title="設定">
         <SettingEdit />
       </b-tab>
@@ -17,10 +20,12 @@
 
 <script>
 import ArticleEdit from "@/components/ArticleEdit.vue";
+import CategoryEdit from "@/components/CategoryEdit.vue";
 import SettingEdit from "@/components/SettingEdit.vue";
 export default {
   components: {
     ArticleEdit,
+    CategoryEdit,
     SettingEdit
   },
   data() {

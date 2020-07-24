@@ -11,7 +11,6 @@ body {
 }
 
 .header a,
-.navigation a,
 .footer a {
   text-decoration: none;
   color: inherit;
@@ -23,16 +22,13 @@ body {
   width: 100%;
   text-align: center;
   line-height: 40px;
-  font-size: 80%;
+  font-size: 12px;
 }
 
-.header {
-  height: 30px;
-  padding: 20px 5%;
-}
-
-.header > a {
-  font-size: 150%;
+.header-title {
+  line-height: 40px;
+  font-size: 24px;
+  padding: 10px 2%;
 }
 
 .navigation > a {
@@ -47,13 +43,13 @@ body {
   width: 100%;
 }
 
-.content {
+main, aside {
   padding: 0 2%;
   margin: 20px 0;
 }
 
 .content-title {
-  font-size: 160%;
+  font-size: 24px;
   font-weight: bold;
   margin: 0 0 20px;
   border-bottom: 1px solid lightgray;

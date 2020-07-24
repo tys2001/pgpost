@@ -9,40 +9,6 @@
       <ImageSelectModal ref="imageSelectModal" v-model="draftItem.topImage" />
     </b-input-group>
     <div>
-      <b-button v-b-toggle.editCategory block variant="primary">カテゴリ編集</b-button>
-      <b-collapse id="editCategory">
-        <b-card>
-          <b-table
-            :items="draftItem.categories"
-            :fields="categoryFields"
-            show-empty
-            empty-text="カテゴリがありません"
-          >
-            <template v-slot:cell(categoryId)="data">
-              <b-input v-model="data.item.categoryId" />
-            </template>
-            <template v-slot:cell(categoryName)="data">
-              <b-input v-model="data.item.categoryName" />
-            </template>
-            <template v-slot:cell(buttons)="data">
-              <b-button-group size="sm">
-                <b-button @click="onClickDeleteCategory(data.item)">
-                  <b-icon icon="trash-fill"></b-icon>
-                </b-button>
-                <b-button @click="onClickSwapUpCategory(data.item)">
-                  <b-icon icon="caret-up-square-fill"></b-icon>
-                </b-button>
-                <b-button @click="onClickSwapDownCategory(data.item)">
-                  <b-icon icon="caret-down-square-fill"></b-icon>
-                </b-button>
-              </b-button-group>
-            </template>
-          </b-table>
-          <b-button @click="draftItem.categories.push({})" variant="primary" block>追加</b-button>
-        </b-card>
-      </b-collapse>
-    </div>
-    <div>
       <b-button v-b-toggle.editMenu block variant="primary">メニュー編集</b-button>
       <b-collapse id="editMenu">
         <b-card>
@@ -76,7 +42,7 @@
         </b-card>
       </b-collapse>
     </div>
-    <b-button @click="onClickSave" variant="primary">保存</b-button>
+    <b-button @click="onClickSave" variant="primary" block>保存</b-button>
   </div>
 </template>
 
