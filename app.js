@@ -23,6 +23,22 @@ app.get('/', (req, res) => {
   renderPage("index", res);
 });
 
+app.get('/publish', async (req, res) => {
+  const publishUrls = [
+    "/style.css",
+    "/edit/content.css"
+  ];
+  const pageDocs = await firestore.collection("articles").get();
+  pageDocs.forEach(doc => {
+    publishUrls.push(`/${doc.id}`);
+  });
+  const mediaDocs = await firestore.collection("media").get();
+  mediaDocs.forEach(doc => {
+    publishUrls.push(`/media/${doc.id}`);
+  });
+  res.json(publishUrls);
+});
+
 app.get('/:articleId', (req, res) => {
   renderPage(req.params.articleId, res);
 });

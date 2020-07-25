@@ -3,6 +3,9 @@
     <b-input-group prepend="サイト名">
       <b-input v-model="draftItem.siteName" />
     </b-input-group>
+    <b-input-group prepend="公開先URL">
+      <b-input v-model="draftItem.publishUrl" />
+    </b-input-group>
     <b-input-group prepend="トップ画像">
       <div class="thumbnail" :style="{ backgroundImage: `url(${draftItem.topImage})` }" />
       <b-button @click="$refs.imageSelectModal.show()" variant="primary">select</b-button>
@@ -58,14 +61,10 @@ export default {
       draftItem: {
         siteName: "",
         topImage: "",
+        publishUrl: "",
         categories: [],
         menuItems: []
       },
-      categoryFields: [
-        { key: "categoryId", label: "カテゴリID" },
-        { key: "categoryName", label: "カテゴリ名" },
-        { key: "buttons", label: "" }
-      ],
       menuItemFields: [
         { key: "label", label: "ラベル" },
         { key: "href", label: "リンク先" },

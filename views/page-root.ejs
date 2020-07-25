@@ -2,18 +2,7 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="robots" content="noindex">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link rel="icon" href="/media/icon-32x32.png" sizes="32x32">
-  <link rel="icon" href="/media/icon-192x192.png" sizes="192x192">
-  <link rel="apple-touch-icon-precomposed" href="/media/icon-180x180.png">
-  <meta name="msapplication-TileImage" content="/media/icon-270x270.png">
-  <title><%= (data.article.title?(data.article.title + " | "):"") + data.setting.siteName %></title>
-  <link rel="stylesheet" type="text/css" href="/style.css?<%= data.timestamp %>">
-  <link rel="stylesheet" type="text/css" href="/edit/content.css?<%= data.timestamp %>">
-  <link rel="stylesheet" type="text/css" href="/edit/code-highlight.css?<%= data.timestamp %>">
+  <%- include("./meta.ejs", data) %>
 </head>
 
 <body>

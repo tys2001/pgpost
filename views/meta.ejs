@@ -1,0 +1,32 @@
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" href="/media/icon-32x32.png" sizes="32x32">
+<link rel="icon" href="/media/icon-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon-precomposed" href="/media/icon-180x180.png">
+<meta name="msapplication-TileImage" content="/media/icon-270x270.png">
+<title><%= (data.article.title?(data.article.title + " | "):"") + data.setting.siteName %></title>
+<link rel="stylesheet" type="text/css" href="/style.css?<%= data.timestamp %>">
+<link rel="stylesheet" type="text/css" href="/edit/content.css?<%= data.timestamp %>">
+<link rel="stylesheet" type="text/css" href="/edit/code-highlight.css?<%= data.timestamp %>">
+<meta property="og:description" content="<%= data.article.description %>">
+<meta property="og:title" content="<%= data.article.title %>">
+<meta property="og:url" content="<%= data.setting.publishUrl %>">
+<meta property="og:image" content="<%= data.setting.publishUrl %>/media/icon-270x270.png">
+<meta property="og:site_name" content="<%= data.setting.siteName %>">
+<meta property="og:locale" content="ja_JP">
+<% if (data.article.category.relation === "same_categories") { %>
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-06-05T21:54:47+09:00">
+<meta property="article:modified_time" content="2020-06-06T00:54:46+09:00">
+<% } else { %>
+<meta property="og:type" content="website">
+<% } %>
+<meta property="article:section" content="<%= data.article.category.categoryName %>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:description" content="<%= data.article.description %>">
+<meta name="twitter:title" content="<%= data.article.title %>">
+<meta name="twitter:url" content="<%= data.setting.publishUrl %>">
+<meta name="twitter:image" content="<%= data.article.captionImage %>">
+<meta name="twitter:domain" content="blog.tyspine.com">

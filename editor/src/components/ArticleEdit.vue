@@ -5,8 +5,6 @@
         :items="store.articles"
         :fields="fields"
         @row-clicked="onClickRow"
-        caption="ページ一覧"
-        caption-top
         selectable
         select-mode="single"
         show-empty
@@ -35,6 +33,9 @@
         <div class="thumbnail" :style="{ backgroundImage: `url(${draftItem.captionImage})` }" />
         <b-button @click="$refs.imageSelectModal.show()" variant="primary">select</b-button>
         <ImageSelectModal ref="imageSelectModal" v-model="draftItem.captionImage" />
+      </b-input-group>
+      <b-input-group prepend="概要">
+        <b-input v-model="draftItem.description" />
       </b-input-group>
       <b-button @click="onClickEditContent" variant="primary" block>本文を編集する</b-button>
       <b-button @click="onClickPreView" variant="primary" block>プレビュー</b-button>
@@ -79,7 +80,8 @@ export default {
         articleId: "",
         title: "",
         categoryId: "",
-        captionImage: ""
+        captionImage: "",
+        description: ""
       };
     },
     onClickRow(item) {
