@@ -30,7 +30,8 @@ app.get('/publish', async (req, res) => {
   ];
   const pageDocs = await firestore.collection("articles").get();
   pageDocs.forEach(doc => {
-    publishUrls.push({ url: `/${doc.id}`, path: `/${doc.id}/index.html` });
+    if (doc.id === "index") publishUrls.push({ url: `/`, path: `/index.html` });
+    else publishUrls.push({ url: `/${doc.id}`, path: `/${doc.id}/index.html` });
   });
   const mediaDocs = await firestore.collection("media").get();
   mediaDocs.forEach(doc => {
