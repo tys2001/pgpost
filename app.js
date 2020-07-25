@@ -25,16 +25,16 @@ app.get('/', (req, res) => {
 
 app.get('/publish', async (req, res) => {
   const publishUrls = [
-    "/style.css",
-    "/edit/content.css"
+    { url: "/style.css", path: "/style.css" },
+    { url: "/edit/content.css", path: "/edit/content.css" }
   ];
   const pageDocs = await firestore.collection("articles").get();
   pageDocs.forEach(doc => {
-    publishUrls.push(`/${doc.id}`);
+    publishUrls.push({ url: `/${doc.id}`, path: `/${doc.id}/index.html` });
   });
   const mediaDocs = await firestore.collection("media").get();
   mediaDocs.forEach(doc => {
-    publishUrls.push(`/media/${doc.id}`);
+    publishUrls.push({ url: `/media/${doc.id}`, path: `/media/${doc.id}` });
   });
   res.json(publishUrls);
 });
