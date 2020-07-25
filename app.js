@@ -26,7 +26,8 @@ app.get('/', (req, res) => {
 app.get('/publish', async (req, res) => {
   const publishUrls = [
     { url: "/style.css", path: "/style.css" },
-    { url: "/edit/content.css", path: "/edit/content.css" }
+    { url: "/edit/content.css", path: "/edit/content.css" },
+    { url: "/edit/code-highlight.css", path: "/edit/code-highlight.css" }
   ];
   const pageDocs = await firestore.collection("articles").get();
   pageDocs.forEach(doc => {
