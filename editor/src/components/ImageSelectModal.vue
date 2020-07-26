@@ -18,7 +18,7 @@
         :selected="selectedMedia === item"
         @click="onClickMedia(item)"
       >
-        <div class="thumbnail" :style="{ backgroundImage: `url(${item.storageUrl})` }">
+        <div class="thumbnail" :style="{ backgroundImage: `url(${item.mediaUrl})` }">
           <div class="square" />
         </div>
       </div>
@@ -52,8 +52,7 @@ export default {
       else this.selectedMedia = item;
     },
     onClickOk() {
-      if (this.selectedMedia)
-        this.$emit("input", this.selectedMedia.storageUrl);
+      if (this.selectedMedia) this.$emit("input", this.selectedMedia.mediaUrl);
       else this.$emit("input", "");
     },
     onUploadFileChange() {

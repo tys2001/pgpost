@@ -34,6 +34,7 @@ export default {
         });
       },
       async addArticle(data) {
+        data.updatedAt = firebase.firestore.Timestamp.now();
         await firestore.collection("articles").doc(data.articleId).set(data);
         this.loadArticles();
       },
@@ -65,7 +66,8 @@ export default {
           .set({
             fileName: file.name,
             mediaUrl: `/media/${file.name}`,
-            storageUrl: storageUrl
+            storageUrl: storageUrl,
+            updatedAt: firebase.firestore.Timestamp.now()
           });
         this.loadMedia();
       },
