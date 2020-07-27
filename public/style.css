@@ -27,8 +27,9 @@ body {
 
 .header-title {
   line-height: 40px;
-  font-size: 24px;
+  font-size: 20px;
   padding: 10px 2%;
+  font-weight: bold;
 }
 
 .navigation > a {
@@ -66,6 +67,10 @@ main, aside {
 .related {
   padding: 0 2%;
   margin: 20px 0;
+}
+
+.article-link-list-title {
+  font-weight: bold;
 }
 
 .article-link-list {
