@@ -13,7 +13,7 @@
 <meta property="og:description" content="<%= data.article.description %>">
 <meta property="og:title" content="<%= data.article.title %>">
 <meta property="og:url" content="<%= data.setting.publishUrl %>">
-<meta property="og:image" content="<%= data.setting.publishUrl %>/media/icon-270x270.png">
+<meta property="og:image" content="<%= data.setting.publishUrl %><%= data.article.captionImage %>">
 <meta property="og:site_name" content="<%= data.setting.siteName %>">
 <meta property="og:locale" content="ja_JP">
 <% if (data.article.category.relation === "same_categories") { %>
@@ -28,5 +28,5 @@
 <meta name="twitter:description" content="<%= data.article.description %>">
 <meta name="twitter:title" content="<%= data.article.title %>">
 <meta name="twitter:url" content="<%= data.setting.publishUrl %>">
-<meta name="twitter:image" content="<%= data.article.captionImage %>">
-<meta name="twitter:domain" content="blog.tyspine.com">
+<meta name="twitter:image" content="<%= data.setting.publishUrl %><%= data.article.captionImage %>">
+<meta name="twitter:domain" content="<%= data.setting.publishUrl.replace('https://', '') %>">
