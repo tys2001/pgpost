@@ -44,3 +44,12 @@
 .content-body *+h3 {
   margin-top: 30px;
 }
+
+.content-body .dl > ul > li {
+  font-weight: bold;
+}
+
+.content-body .dl > ul > li > ul > li {
+  list-style: none;
+  font-weight: normal;
+}
