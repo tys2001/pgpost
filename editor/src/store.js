@@ -51,7 +51,7 @@ export default {
         this.loadSetting();
       },
       async loadMedia() {
-        const docs = await firestore.collection("media").get();
+        const docs = await firestore.collection("media").orderBy("updatedAt", "desc").get();
         this.media = [];
         docs.forEach(doc => {
           const data = doc.data();
