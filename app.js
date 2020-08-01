@@ -24,6 +24,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/publish', async (req, res) => {
+  const publishDoc = await firestore.collection("publish").doc("publish").get();
+  const lastPublish = publishDoc.exists ? publishDoc.data().lastPublish : null;
+
   const publishUrls = [
     { url: "/style.css", path: "/style.css" },
     { url: "/edit/content.css", path: "/edit/content.css" },
@@ -34,11 +37,20 @@ app.get('/publish', async (req, res) => {
     if (doc.id === "index") publishUrls.push({ url: `/`, path: `/index.html` });
     else publishUrls.push({ url: `/${doc.id}`, path: `/${doc.id}/index.html` });
   });
-  const mediaDocs = await firestore.collection("media").get();
+  const mediaDocs = lastPublish ?
+    await firestore.collection("media").where("updatedAt", ">", lastPublish).get()
+    : await firestore.collection("media").get();
   mediaDocs.forEach(doc => {
     publishUrls.push({ url: `/media/${doc.id}`, path: `/media/${doc.id}` });
   });
   res.json(publishUrls);
+});
+
+app.get('/publish-complete', async (req, res) => {
+  await firestore.collection("publish").doc("publish").set({
+    lastPublish: firebase.firestore.Timestamp.now()
+  });
+  res.end();
 });
 
 app.get('/:articleId', (req, res) => {
