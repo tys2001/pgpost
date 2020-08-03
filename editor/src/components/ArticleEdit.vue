@@ -37,6 +37,12 @@
       <b-input-group prepend="概要">
         <b-input v-model="draftItem.description" />
       </b-input-group>
+      <b-input-group prepend="作成日">
+        <b-form-datepicker v-model="draftItem.publishedDate" />
+      </b-input-group>
+      <b-input-group prepend="変更日">
+        <b-form-datepicker v-model="draftItem.modifiedDate" />
+      </b-input-group>
       <b-button @click="onClickEditContent" variant="primary" block>本文を編集する</b-button>
       <b-button @click="onClickPreView" variant="primary" block>プレビュー</b-button>
       <MarkdownEditor :articleId="draftItem.articleId" ref="markDownEditor" />
@@ -52,7 +58,7 @@ import MarkdownEditor from "@/components/MarkdownEditor.vue";
 export default {
   components: {
     ImageSelectModal,
-    MarkdownEditor
+    MarkdownEditor,
   },
   data() {
     return {
@@ -64,13 +70,13 @@ export default {
           key: "categoryId",
           label: "カテゴリ",
           sortable: true,
-          formatter: value =>
+          formatter: (value) =>
             this.categoryDict[value]
               ? this.categoryDict[value].categoryName
-              : ""
-        }
+              : "",
+        },
       ],
-      draftItem: null
+      draftItem: null,
     };
   },
   mounted() {},
@@ -81,7 +87,9 @@ export default {
         title: "",
         categoryId: "",
         captionImage: "",
-        description: ""
+        description: "",
+        publishedDate: "",
+        modifiedDate: "",
       };
     },
     onClickRow(item) {
@@ -104,7 +112,7 @@ export default {
       if (!confirm("このページを削除しますか？")) return;
       await this.store.deleteArticle(this.draftItem);
       this.draftItem = null;
-    }
+    },
   },
   computed: {
     categoryDict() {
@@ -113,8 +121,8 @@ export default {
         dict[category.categoryId] = category;
       }
       return dict;
-    }
-  }
+    },
+  },
 };
 </script>
 

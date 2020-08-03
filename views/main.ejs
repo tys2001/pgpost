@@ -1,5 +1,8 @@
 <main>
   <article>
+    <% if (data.article.category.relation === "same_categories") { %>
+    <time class="published-date"><%= data.article.publishedDate %></time>
+    <% } %>
     <% if (data.article.title) { %>
     <h1 class="content-title"><%= data.article.title %></h1>
     <% } %>
