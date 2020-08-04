@@ -75,6 +75,7 @@ main, aside {
 
 .article-link-list-title {
   font-weight: bold;
+  text-decoration: underline;
 }
 
 .article-link-list {
