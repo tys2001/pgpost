@@ -2,10 +2,10 @@
   <% if (data.article.category.relation === "all_categories") { %>
   <% for (let category of data.setting.categories) { %>
   <% if (category.relation === "same_categories") { %>
-  <div class="article-link-list-title">&gt;&gt; <%= category.categoryName %>の記事（<%- category.articles.length %>）</div>
+  <div class="article-link-list-title">&gt;&gt; <%= category.categoryName %>の記事（<%= category.articles.length %>）</div>
   <div class="article-link-list responsive-grid-column">
     <% for (let article of category.articles) { %>
-    <a class="article-link" href="/<%- article.articleId %>">
+    <a class="article-link" href="/<%= article.articleId %>">
       <div class="article-link-image" style="background-image: url(<%=article.captionImage%>)"></div>
       <div class="article-link-title"><%= article.title %></div>
     </a>
@@ -18,7 +18,7 @@
   <div class="article-link-list-title">&gt;&gt; 関連記事</div>
   <div class="article-link-list responsive-grid-column">
     <% for (let relatedArticle of data.article.relatedArticles) { %>
-    <a class="article-link" href="/<%- relatedArticle.articleId %>">
+    <a class="article-link" href="/<%= relatedArticle.articleId %>">
       <div class="article-link-image" style="background-image: url(<%=relatedArticle.captionImage%>)"></div>
       <div class="article-link-title"><%= relatedArticle.title %></div>
     </a>

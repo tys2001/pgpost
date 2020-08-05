@@ -3,7 +3,7 @@
   <% if (data.setting.menuItems.length > 0) { %>
   <nav class="navigation">
     <% for (let menuItem of data.setting.menuItems) { %>
-    <a href="<%- menuItem.href %>"><%= menuItem.label %></a>
+    <a href="<%= menuItem.href %>"><%= menuItem.label %></a>
     <% } %>
   </nav>
   <% } %>
