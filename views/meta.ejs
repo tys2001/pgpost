@@ -10,6 +10,8 @@
 <link rel="stylesheet" type="text/css" href="/edit/content.css?<%= data.timestamp %>">
 <link rel="stylesheet" type="text/css" href="/edit/code-highlight.css?<%= data.timestamp %>">
 <meta name="description" content="<%= data.article.description %>">
+<meta name="thumbnail"
+  content="<%= data.setting.publishUrl %><%= data.article.captionImage || '/media/icon-270x270.png' %>" />
 <meta property="og:description" content="<%= data.article.description %>">
 <meta property="og:title" content="<%= data.article.title %>">
 <meta property="og:url" content="<%= data.setting.publishUrl %>">
