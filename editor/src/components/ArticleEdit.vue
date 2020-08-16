@@ -37,6 +37,12 @@
       <b-input-group prepend="概要">
         <b-input v-model="draftItem.description" />
       </b-input-group>
+      <b-input-group prepend="状態">
+        <b-form-select v-model="draftItem.status">
+          <option value="draft">下書き</option>
+          <option value="public">公開</option>
+        </b-form-select>
+      </b-input-group>
       <b-input-group prepend="作成日">
         <b-form-datepicker v-model="draftItem.publishedDate" />
       </b-input-group>
@@ -90,6 +96,7 @@ export default {
         description: "",
         publishedDate: "",
         modifiedDate: "",
+        status: "draft",
       };
     },
     onClickRow(item) {

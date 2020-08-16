@@ -10,7 +10,9 @@
       <b-tab title="設定">
         <SettingEdit />
       </b-tab>
-      <b-tab title="公開">not implemented</b-tab>
+      <b-tab title="公開">
+        <Publish />
+      </b-tab>
     </b-tabs>
     <div v-else class="loading">
       <b-spinner variant="primary"></b-spinner>
@@ -22,22 +24,24 @@
 import ArticleEdit from "@/components/ArticleEdit.vue";
 import CategoryEdit from "@/components/CategoryEdit.vue";
 import SettingEdit from "@/components/SettingEdit.vue";
+import Publish from "@/components/Publish.vue";
 export default {
   components: {
     ArticleEdit,
     CategoryEdit,
-    SettingEdit
+    SettingEdit,
+    Publish,
   },
   data() {
     return {
       store: this.$store,
-      ready: false
+      ready: false,
     };
   },
   async mounted() {
     await this.store.loadAll();
     this.ready = true;
-  }
+  },
 };
 </script>
 

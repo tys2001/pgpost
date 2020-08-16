@@ -1,7 +1,7 @@
 <aside>
   <% if (data.article.category.relation === "all_categories") { %>
   <% for (let category of data.setting.categories) { %>
-  <% if (category.relation === "same_categories") { %>
+  <% if (category.relation === "same_categories" && category.articles.length > 0) { %>
   <div class="article-link-list-title">&gt;&gt; <%= category.categoryName %>の記事（<%= category.articles.length %>）</div>
   <div class="article-link-list responsive-grid-column">
     <% for (let article of category.articles) { %>

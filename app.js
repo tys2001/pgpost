@@ -32,7 +32,7 @@ app.get('/publish', async (req, res) => {
     { url: "/edit/content.css", path: "/edit/content.css" },
     { url: "/edit/code-highlight.css", path: "/edit/code-highlight.css" }
   ];
-  const pageDocs = await firestore.collection("articles").get();
+  const pageDocs = await firestore.collection("articles").where("status", "==", "public").get();
   pageDocs.forEach(doc => {
     if (doc.id === "index") publishUrls.push({ url: `/`, path: `/index.html` });
     else publishUrls.push({ url: `/${doc.id}`, path: `/${doc.id}/index.html` });
@@ -106,6 +106,7 @@ renderPage = async (articleId, res) => {
       if (category.relation === "same_categories") {
         const categoryArticlesDoc = await firestore.collection("articles")
           .where("categoryId", "==", category.categoryId)
+          .where("status", "==", "public")
           //.orderBy("articleId").limit(8)
           .get();
         category.articles = [];
@@ -117,6 +118,7 @@ renderPage = async (articleId, res) => {
   } else if (data.article.category.relation === "same_categories") {
     const relatedArticlesDoc = await firestore.collection("articles")
       .where("categoryId", "==", data.article.categoryId)
+      .where("status", "==", "public")
       //.orderBy("articleId").limit(8)
       .get();
     data.article.relatedArticles = [];
