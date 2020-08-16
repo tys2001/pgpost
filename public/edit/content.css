@@ -54,6 +54,11 @@
   font-weight: normal;
 }
 
+.content-body strong {
+  text-decoration-line: underline;
+  background-color: yellow;
+}
+
 .content-body .movie-wrapper {
   width: 80vw;
   height: 60vw;
