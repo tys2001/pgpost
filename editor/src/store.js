@@ -79,8 +79,26 @@ export default {
       },
       async getContent(articleId) {
         const doc = await firestore.collection("article-content").doc(articleId).get();
-        if (doc.exists) return doc.data();
-        else return { markdown: "" };
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.sections) return data;
+          else return {
+            sections: [
+              {
+                markdown: data.markdown,
+                html: data.html,
+              }
+            ]
+          };
+        }
+        else return {
+          sections: [
+            {
+              markdown: "",
+              html: "",
+            }
+          ]
+        };
       },
       async saveContent(articleId, data) {
         await firestore.collection("article-content").doc(articleId).set(data);

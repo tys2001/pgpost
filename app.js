@@ -20,7 +20,7 @@ const timestamp = new Date().getTime();
 app.use(express.static("public"));
 
 app.get('/', (req, res) => {
-  renderPage("index", res);
+  renderPage("index", req, res);
 });
 
 app.get('/publish', async (req, res) => {
@@ -34,8 +34,8 @@ app.get('/publish', async (req, res) => {
   ];
   const pageDocs = await firestore.collection("articles").where("status", "==", "public").get();
   pageDocs.forEach(doc => {
-    if (doc.id === "index") publishUrls.push({ url: `/`, path: `/index.html` });
-    else publishUrls.push({ url: `/${doc.id}`, path: `/${doc.id}/index.html` });
+    if (doc.id === "index") publishUrls.push({ url: `/?publish=true`, path: `/index.html` });
+    else publishUrls.push({ url: `/${doc.id}?publish=true`, path: `/${doc.id}/index.html` });
   });
   const mediaDocs = lastPublish ?
     await firestore.collection("media").where("updatedAt", ">", lastPublish).get()
@@ -54,7 +54,7 @@ app.get('/publish-complete', async (req, res) => {
 });
 
 app.get('/:articleId', (req, res) => {
-  renderPage(req.params.articleId, res);
+  renderPage(req.params.articleId, req, res);
 });
 
 app.get('/media/:fileName', (req, res) => {
@@ -75,11 +75,12 @@ app.use((req, res, next) => {
   renderPage("404", res);
 });
 
-renderPage = async (articleId, res) => {
+renderPage = async (articleId, req, res) => {
   const data = {
     article: {},
     setting: {},
-    timestamp: timestamp
+    timestamp: timestamp,
+    isPublish: (req.query.publish === "true") ? true : false
   };
   const settingDoc = await firestore.collection("settings").doc("setting").get();
   data.setting = settingDoc.data();
@@ -90,10 +91,10 @@ renderPage = async (articleId, res) => {
 
   const articleContentDoc = await firestore.collection("article-content").doc(articleId).get();
   if (!articleContentDoc.exists) res.redirect('/404');
-  data.article.htmlContent = articleContentDoc.data().html;
+  data.article.sections = articleContentDoc.data().sections;
 
   const commonContentDoc = await firestore.collection("article-content").doc("common-bottom").get();
-  data.setting.common = commonContentDoc.data().html;
+  data.setting.commonSections = commonContentDoc.data().sections;
 
   for (let category of data.setting.categories) {
     if (category.categoryId === data.article.categoryId) {

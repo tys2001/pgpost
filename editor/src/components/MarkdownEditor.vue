@@ -4,16 +4,25 @@
       <div class="tool-icon" @click="onClickSave">
         <b-icon icon="upload"></b-icon>
       </div>
-      <div class="tool-icon" @click="exit">
+      <div class="tool-icon" @click="onClickExit">
         <b-icon icon="door-closed"></b-icon>
       </div>
       <div class="tool-icon" @click="$refs.imageSelectModal.show()">
         <b-icon icon="image"></b-icon>
       </div>
+      <b-form-select
+        class="tool-select"
+        size="sm"
+        v-model="selectedSection"
+        :options="sectionSelectOptions"
+      />
+      <div class="tool-icon" @click="onClickAddSection">
+        <b-icon icon="plus"></b-icon>
+      </div>
       <div class="message">{{message}}</div>
     </div>
     <textarea
-      v-model="markdown"
+      v-model="selectedSection.markdown"
       ref="markdownInput"
       class="writer"
       @scroll="onScroll"
@@ -21,7 +30,7 @@
       @touchmove="scrollTarget=null"
     />
     <div
-      v-html="html"
+      v-html="htmlPreview"
       ref="htmlPreview"
       class="viewer content-body"
       @scroll="onScroll"
@@ -38,20 +47,21 @@ import marked from "marked";
 import hljs from "highlight.js";
 export default {
   components: {
-    ImageSelectModal
+    ImageSelectModal,
   },
   props: {
-    articleId: String
+    articleId: String,
   },
   data() {
     return {
       store: this.$store,
       shown: false,
       markdown: "",
+      sections: [],
+      selectedSection: { markdown: "", html: "" },
       message: "",
       insertImageUrl: "",
       scrollTarget: null,
-      abortScroll: false
     };
   },
   created() {
@@ -59,32 +69,41 @@ export default {
       langPrefix: "hljs language-",
       highlight: (code, lang) => {
         return hljs.highlightAuto(code, [lang]).value;
-      }
+      },
     });
   },
   methods: {
     async open() {
       this.shown = true;
       const content = await this.store.getContent(this.articleId);
-      this.markdown = content.markdown;
+      this.sections = content.sections;
+      this.selectedSection = this.sections[0];
+      console.log(this.sections);
+      console.log(this.selectedSection);
     },
-    exit() {
+    onClickExit() {
       this.shown = false;
     },
     async onClickSave() {
+      for (let section of this.sections) {
+        section.html = marked(section.markdown);
+      }
       await this.store.saveContent(this.articleId, {
-        markdown: this.markdown,
-        html: this.html
+        sections: this.sections,
       });
       this.message = `Saved at ${new Date().toLocaleString()}`;
     },
+    onClickAddSection() {
+      this.selectedSection = { markdown: "", html: "" };
+      this.sections.push(this.selectedSection);
+    },
     onSelectImage(imageUrl) {
-      const len = this.markdown.length;
+      const len = this.selectedSection.markdown.length;
       const pos = this.$refs.markdownInput.selectionStart;
-      const before = this.markdown.substr(0, pos);
+      const before = this.selectedSection.markdown.substr(0, pos);
       const word = `![](${imageUrl})`;
-      const after = this.markdown.substr(pos, len);
-      this.markdown = before + word + after;
+      const after = this.selectedSection.markdown.substr(pos, len);
+      this.selectedSection.markdown = before + word + after;
     },
     onScroll() {
       const moved = event.target;
@@ -110,12 +129,22 @@ export default {
           this.onClickSave();
         }
       }
-    }
+    },
   },
   computed: {
-    html() {
-      return marked(this.markdown);
-    }
+    htmlPreview() {
+      if (this.selectedSection) return marked(this.selectedSection.markdown);
+      else return "";
+    },
+    sectionSelectOptions() {
+      const ret = [];
+      for (let section of this.sections) {
+        let title = section.markdown;
+        title = title.substr(0, title.indexOf("\n"));
+        ret.push({ text: title, value: section });
+      }
+      return ret;
+    },
   },
   watch: {
     // scrollTarget(val) {
@@ -124,7 +153,7 @@ export default {
     //     this.scrollTarget = null;
     //   }, 100);
     // }
-  }
+  },
 };
 </script>
 <style scoped>
@@ -163,6 +192,10 @@ export default {
 }
 .tool-icon:hover {
   background-color: lightgray;
+}
+.tool-select {
+  width: 300px;
+  margin: 5px;
 }
 .message {
   margin-left: auto;

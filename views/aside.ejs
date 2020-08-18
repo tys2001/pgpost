@@ -26,5 +26,9 @@
   </div>
   <% } %>
   <% } %>
-  <div class="content-body"><%- data.setting.common %></div>
+  <div class="content-body">
+    <% for (let section of data.setting.commonSections) { %>
+    <%- section.html %>
+    <% } %>
+  </div>
 </aside>

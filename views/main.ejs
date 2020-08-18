@@ -9,6 +9,10 @@
     <% if (data.article.captionImage) { %>
     <img class="eyecatch-image" src="<%= data.article.captionImage %>" />
     <% } %>
-    <div class="content-body"><%- data.article.htmlContent %></div>
+    <div class="content-body">
+      <% for (let section of data.article.sections) { %>
+      <%- section.html %>
+      <% } %>
+    </div>
   </article>
 </main>
