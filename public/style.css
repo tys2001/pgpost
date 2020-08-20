@@ -69,10 +69,9 @@ main, aside {
   display: block;
 }
 
-code {
+p > code, li > code {
   font-size: 87.5%;
   color: #e83e8c;
-  word-wrap: break-word;
 }
 
 .related {
