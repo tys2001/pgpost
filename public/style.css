@@ -4,10 +4,11 @@ html {
 
 body {
   background-color: white;
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
   font-family: verdana, "ヒラギノ丸ゴ ProN W4", "Hiragino Maru Gothic ProN",
     "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic", Sans-Serif;
+  box-shadow: 0 0 10px rgba(0,0,0,.3);
 }
 
 .header a,
@@ -81,35 +82,38 @@ code {
 
 .article-link-list-title {
   font-weight: bold;
-  text-decoration: underline;
+  margin-bottom: 10px;
+  padding: 5px;
+  background-color: #eef;
 }
 
 .article-link-list {
   display: grid;
   margin-bottom: 10px;
+  grid-gap: 10px;
+  margin-bottom: 20px;
 }
 
 .article-link {
-  padding: 5px;
   text-decoration: none;
   color: inherit;
   border-radius: 5px;
 }
 
-.article-link:hover {
-  background-color: aliceblue;
+.article-link:hover .article-link-image {
+  opacity: 0.5;
 }
 
 .article-link-image {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding-bottom: 75%;
+  padding-bottom: 60%;
 }
 
 .article-link-title{
   height: 60px;
-  margin: 5px 0;
+  margin-top: 10px;
   overflow: hidden;
   line-height: 20px;
   font-size: 14px;
@@ -125,13 +129,13 @@ code {
 /* wide */
 @media (min-width: 750px) {
   .responsive-grid-column {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 /* closed */
 @media (max-width: 749px) {
   .responsive-grid-column {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
