@@ -1,5 +1,13 @@
 <header class="header">
-  <div class="header-title"><a href="/"><%= data.setting.siteName %></a></div>
+  <div class="header-title">
+    <a href="/">
+      <% if (data.setting.logoImage) { %>
+      <img class="logo-image" src="<%= data.setting.logoImage %>" alt="<%= data.setting.siteName %>" />
+      <% } else { %>
+      <%= data.setting.siteName %>
+      <% } %>
+    </a>
+  </div>
   <% if (data.setting.menuItems.length > 0) { %>
   <nav class="navigation">
     <% for (let menuItem of data.setting.menuItems) { %>
@@ -7,5 +15,7 @@
     <% } %>
   </nav>
   <% } %>
+  <% if (data.setting.topImage) { %>
   <img class="top-image" src="<%= data.setting.topImage %>" />
+  <% } %>
 </header>

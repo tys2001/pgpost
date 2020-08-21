@@ -27,10 +27,15 @@ body {
 }
 
 .header-title {
-  line-height: 40px;
   font-size: 20px;
   padding: 10px 2%;
   font-weight: bold;
+  background-color: #444;
+  color: white;
+}
+
+.header-title img {
+  max-width: 100%;
 }
 
 .navigation > a {
@@ -119,10 +124,10 @@ p > code, li > code {
 }
 
 .footer {
-  background-color: black;
-  color: white;
   text-align: center;
   padding: 20px;
+  background-color: #444;
+  color: white;
 }
 
 /* wide */

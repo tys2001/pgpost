@@ -6,10 +6,15 @@
     <b-input-group prepend="公開先URL">
       <b-input v-model="draftItem.publishUrl" />
     </b-input-group>
+    <b-input-group prepend="ロゴ画像">
+      <div class="thumbnail" :style="{ backgroundImage: `url(${draftItem.logoImage})` }" />
+      <b-button @click="$refs.logoImageSelectModal.show()" variant="primary">select</b-button>
+      <ImageSelectModal ref="logoImageSelectModal" v-model="draftItem.logoImage" />
+    </b-input-group>
     <b-input-group prepend="トップ画像">
       <div class="thumbnail" :style="{ backgroundImage: `url(${draftItem.topImage})` }" />
-      <b-button @click="$refs.imageSelectModal.show()" variant="primary">select</b-button>
-      <ImageSelectModal ref="imageSelectModal" v-model="draftItem.topImage" />
+      <b-button @click="$refs.topImageSelectModal.show()" variant="primary">select</b-button>
+      <ImageSelectModal ref="topImageSelectModal" v-model="draftItem.topImage" />
     </b-input-group>
     <div>
       <b-button v-b-toggle.editMenu block variant="primary">メニュー編集</b-button>
@@ -53,7 +58,7 @@
 import ImageSelectModal from "@/components/ImageSelectModal.vue";
 export default {
   components: {
-    ImageSelectModal
+    ImageSelectModal,
   },
   data() {
     return {
@@ -63,13 +68,13 @@ export default {
         topImage: "",
         publishUrl: "",
         categories: [],
-        menuItems: []
+        menuItems: [],
       },
       menuItemFields: [
         { key: "label", label: "ラベル" },
         { key: "href", label: "リンク先" },
-        { key: "buttons", label: "" }
-      ]
+        { key: "buttons", label: "" },
+      ],
     };
   },
   mounted() {
@@ -81,7 +86,7 @@ export default {
     },
     onClickDeleteCategory(item) {
       this.draftItem.categories = this.draftItem.categories.filter(
-        d => d !== item
+        (d) => d !== item
       );
     },
     onClickSwapUpCategory(item) {
@@ -106,7 +111,7 @@ export default {
     },
     onClickDeleteMenuItem(item) {
       this.draftItem.menuItems = this.draftItem.menuItems.filter(
-        d => d !== item
+        (d) => d !== item
       );
     },
     onClickSwapUpMenuItem(item) {
@@ -128,8 +133,8 @@ export default {
         this.draftItem.menuItems[index + 1],
         this.draftItem.menuItems[index]
       );
-    }
-  }
+    },
+  },
 };
 </script>
 
