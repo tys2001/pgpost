@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/pg', async (req, res) => {
-  const pool = new pg.Pool();
+  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
   const result = await pool.query('SELECT NOW()');
   await pool.end();
   res.json(result);
