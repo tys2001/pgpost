@@ -1,7 +1,7 @@
 const express = require("express");
 const firebase = require("firebase");
-const fs = require('fs');
 const https = require('https');
+const pg = require('pg')
 
 firebase.initializeApp({
   apiKey: "AIzaSyB_m5uvIdIKbvW1ZWEphFQ_M22ERLLtLG0",
@@ -21,6 +21,13 @@ app.use(express.static("public"));
 
 app.get('/', (req, res) => {
   renderPage("index", req, res);
+});
+
+app.get('/pg', async (req, res) => {
+  const pool = new pg.Pool();
+  const result = await pool.query('SELECT NOW()');
+  await pool.end();
+  res.json(result);
 });
 
 app.get('/publish', async (req, res) => {
