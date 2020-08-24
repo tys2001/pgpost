@@ -17,7 +17,9 @@ const firestore = firebase.firestore();
 const app = express();
 const timestamp = new Date().getTime();
 
-const config = require('./config.js')[app.get('env')];
+const config = app.get('env') === "development"
+  ? require('./config/dev.env.js')
+  : require('./config/prod.env.js');
 const pool = new pg.Pool(config.pgconf);
 
 app.use(express.static("public"));
