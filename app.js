@@ -1,7 +1,7 @@
 const express = require("express");
 const firebase = require("firebase");
 const https = require('https');
-const pg = require('pg')
+const pg = require('pg');
 
 firebase.initializeApp({
   apiKey: "AIzaSyB_m5uvIdIKbvW1ZWEphFQ_M22ERLLtLG0",
@@ -17,6 +17,9 @@ const firestore = firebase.firestore();
 const app = express();
 const timestamp = new Date().getTime();
 
+const config = require('./config.js')[app.get('env')];
+const pool = new pg.Pool(config.pgconf);
+
 app.use(express.static("public"));
 
 app.get('/', (req, res) => {
@@ -24,9 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/pg', async (req, res) => {
-  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
   const result = await pool.query('SELECT NOW()');
-  await pool.end();
   res.json(result);
 });
 
