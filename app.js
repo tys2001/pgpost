@@ -1,18 +1,18 @@
 const express = require("express");
 const firebase = require("firebase");
 const https = require('https');
-const pg = require('pg');
+const database = require('./src/db.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyB_m5uvIdIKbvW1ZWEphFQ_M22ERLLtLG0",
-  authDomain: "tysfb-ac05c.firebaseapp.com",
-  databaseURL: "https://tysfb-ac05c.firebaseio.com",
-  projectId: "tysfb-ac05c",
-  storageBucket: "tysfb-ac05c.appspot.com",
-  messagingSenderId: "746165169108",
-  appId: "1:746165169108:web:26381f1f5d41b674bb8441",
-  measurementId: "G-G1YYLRWCGS"
+  apiKey: "AIzaSyBxzmoDNJtculoSL4tEtTqoib_B-jmm74Q",
+  authDomain: "kkrdemo-17842.firebaseapp.com",
+  databaseURL: "https://kkrdemo-17842.firebaseio.com",
+  projectId: "kkrdemo-17842",
+  storageBucket: "kkrdemo-17842.appspot.com",
+  messagingSenderId: "919163321944",
+  appId: "1:919163321944:web:8001d8db7292c388d2542d"
 });
+
 const firestore = firebase.firestore();
 const app = express();
 const timestamp = new Date().getTime();
@@ -20,17 +20,11 @@ const timestamp = new Date().getTime();
 const config = app.get('env') === "development"
   ? require('./config/dev.env.js')
   : require('./config/prod.env.js');
-const pool = new pg.Pool(config.pgconf);
 
 app.use(express.static("public"));
 
 app.get('/', (req, res) => {
   renderPage("index", req, res);
-});
-
-app.get('/pg', async (req, res) => {
-  const result = await pool.query('SELECT NOW()');
-  res.json(result);
 });
 
 app.get('/publish', async (req, res) => {
@@ -81,8 +75,17 @@ app.get('/media/:fileName', (req, res) => {
   });
 });
 
+const db = database(config);
+app.get('/db/:command', async (req, res) => {
+  if (db[req.params.command]) {
+    const result = await db[req.params.command]();
+    res.json(result);
+  }
+  renderPage("404", req, res);
+});
+
 app.use((req, res, next) => {
-  renderPage("404", res);
+  renderPage("404", req, res);
 });
 
 renderPage = async (articleId, req, res) => {

@@ -52,10 +52,10 @@ export default {
       fields: [
         { key: "categoryId", label: "カテゴリID" },
         { key: "categoryName", label: "カテゴリ名" },
-        { key: "buttons", label: "" }
+        { key: "buttons", label: "" },
       ],
       draftItem: {},
-      editItem: {}
+      editItem: {},
     };
   },
   mounted() {
@@ -66,15 +66,17 @@ export default {
       this.editItem = item;
     },
     onClickAddCategory() {
+      if (!this.draftItem.categories)
+        this.$set(this.draftItem, "categories", []);
       this.draftItem.categories.push({
         categoryId: "",
         categoryName: "",
-        relation: "none"
+        relation: "none",
       });
     },
     onClickDeleteCategory(item) {
       this.draftItem.categories = this.draftItem.categories.filter(
-        d => d !== item
+        (d) => d !== item
       );
     },
     onClickSwapUpCategory(item) {
@@ -99,8 +101,8 @@ export default {
     },
     async onClickSave() {
       this.store.saveSetting(this.draftItem);
-    }
-  }
+    },
+  },
 };
 </script>
 

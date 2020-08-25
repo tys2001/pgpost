@@ -46,7 +46,7 @@
               </b-button-group>
             </template>
           </b-table>
-          <b-button @click="draftItem.menuItems.push({})" variant="primary" block>追加</b-button>
+          <b-button @click="onClickAddMenuItem" variant="primary" block>追加</b-button>
         </b-card>
       </b-collapse>
     </div>
@@ -84,30 +84,9 @@ export default {
     async onClickSave() {
       this.store.saveSetting(this.draftItem);
     },
-    onClickDeleteCategory(item) {
-      this.draftItem.categories = this.draftItem.categories.filter(
-        (d) => d !== item
-      );
-    },
-    onClickSwapUpCategory(item) {
-      const index = this.draftItem.categories.indexOf(item);
-      if (index === 0) return;
-      this.draftItem.categories.splice(
-        index - 1,
-        2,
-        this.draftItem.categories[index],
-        this.draftItem.categories[index - 1]
-      );
-    },
-    onClickSwapDownCategory(item) {
-      const index = this.draftItem.categories.indexOf(item);
-      if (index === this.draftItem.categories.length - 1) return;
-      this.draftItem.categories.splice(
-        index,
-        2,
-        this.draftItem.categories[index + 1],
-        this.draftItem.categories[index]
-      );
+    onClickAddMenuItem() {
+      if (!this.draftItem.menuItems) this.$set(this.draftItem, "menuItems", []);
+      this.draftItem.menuItems.push({});
     },
     onClickDeleteMenuItem(item) {
       this.draftItem.menuItems = this.draftItem.menuItems.filter(
