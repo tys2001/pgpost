@@ -2,8 +2,7 @@ const express = require("express");
 const firebase = require("firebase");
 const https = require('https');
 const database = require('./src/db.js');
-
-firebase.initializeApp({
+const firebaseConfig = {
   apiKey: "AIzaSyBxzmoDNJtculoSL4tEtTqoib_B-jmm74Q",
   authDomain: "kkrdemo-17842.firebaseapp.com",
   databaseURL: "https://kkrdemo-17842.firebaseio.com",
@@ -11,7 +10,10 @@ firebase.initializeApp({
   storageBucket: "kkrdemo-17842.appspot.com",
   messagingSenderId: "919163321944",
   appId: "1:919163321944:web:8001d8db7292c388d2542d"
-});
+}
+
+
+firebase.initializeApp(firebaseConfig);
 
 const firestore = firebase.firestore();
 const app = express();
@@ -62,7 +64,7 @@ app.get('/:articleId', (req, res) => {
 });
 
 app.get('/media/:fileName', (req, res) => {
-  const url = `https://firebasestorage.googleapis.com/v0/b/tysfb-ac05c.appspot.com/o/${req.params.fileName}?alt=media`
+  const url = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${req.params.fileName}?alt=media`
   https.get(url, (httpRes) => {
     const data = [];
     httpRes.on('data', chunk => data.push(chunk));
@@ -92,6 +94,7 @@ renderPage = async (articleId, req, res) => {
   const data = {
     article: {},
     setting: {},
+    common: {},
     timestamp: timestamp,
     isPublish: (req.query.publish === "true") ? true : false
   };
@@ -106,8 +109,12 @@ renderPage = async (articleId, req, res) => {
   if (!articleContentDoc.exists) res.redirect('/404');
   data.article.sections = articleContentDoc.data().sections;
 
-  const commonContentDoc = await firestore.collection("article-content").doc("common-bottom").get();
-  data.setting.commonSections = commonContentDoc.data().sections;
+  const commonTopDoc = await firestore.collection("article-content").doc("common-top").get();
+  data.common.top = commonTopDoc.data().sections;
+  const commonBottomDoc = await firestore.collection("article-content").doc("common-bottom").get();
+  data.common.bottom = commonBottomDoc.data().sections;
+  const commonFooterDoc = await firestore.collection("article-content").doc("common-footer").get();
+  data.common.footer = commonFooterDoc.data().sections;
 
   for (let category of data.setting.categories) {
     if (category.categoryId === data.article.categoryId) {

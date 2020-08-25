@@ -11,45 +11,6 @@ body {
   box-shadow: 0 0 10px rgba(0,0,0,.3);
 }
 
-.header a,
-.footer a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.navigation {
-  height: 40px;
-  display: flex;
-  width: 100%;
-  text-align: center;
-  line-height: 40px;
-  font-size: 12px;
-}
-
-.header-title {
-  font-size: 20px;
-  padding: 10px 2%;
-  font-weight: bold;
-  background-color: #444;
-  color: white;
-}
-
-.header-title img {
-  max-width: 100%;
-}
-
-.navigation > a {
-  width: 100%;
-}
-
-.navigation > a:hover {
-  background-color: aliceblue;
-}
-
-.top-image {
-  width: 100%;
-}
-
 main, aside {
   padding: 0 2%;
   margin: 20px 0;
@@ -121,13 +82,6 @@ p > code, li > code {
   overflow: hidden;
   line-height: 20px;
   font-size: 14px;
-}
-
-.footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #444;
-  color: white;
 }
 
 /* wide */

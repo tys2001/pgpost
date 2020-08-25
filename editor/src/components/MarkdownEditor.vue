@@ -222,6 +222,5 @@ export default {
   grid-row-start: 2;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 20px;
 }
 </style>
