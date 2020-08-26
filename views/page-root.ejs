@@ -5,7 +5,7 @@
   <%- include("./meta.ejs", data) %>
 </head>
 
-<body>
+<body page="<%= data.pageId %>">
   <%- include("./header.ejs", data) %>
   <%- include("./main.ejs", data) %>
   <%- include("./aside.ejs", data) %>

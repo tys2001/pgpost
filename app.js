@@ -92,6 +92,7 @@ app.use((req, res, next) => {
 
 renderPage = async (articleId, req, res) => {
   const data = {
+    pageId: articleId,
     article: {},
     setting: {},
     common: {},

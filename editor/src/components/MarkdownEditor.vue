@@ -26,17 +26,8 @@
       ref="markdownInput"
       class="writer"
       @scroll="onScroll"
-      @mousemove="scrollTarget=null"
-      @touchmove="scrollTarget=null"
     />
-    <div
-      v-html="htmlPreview"
-      ref="htmlPreview"
-      class="viewer content-body"
-      @scroll="onScroll"
-      @mousemove="scrollTarget=null"
-      @touchmove="scrollTarget=null"
-    ></div>
+    <div v-html="htmlPreview" ref="htmlPreview" class="viewer content-body"></div>
     <ImageSelectModal ref="imageSelectModal" @input="onSelectImage" />
   </div>
 </template>
@@ -61,7 +52,6 @@ export default {
       selectedSection: { markdown: "", html: "" },
       message: "",
       insertImageUrl: "",
-      scrollTarget: null,
     };
   },
   created() {
@@ -106,20 +96,14 @@ export default {
       this.selectedSection.markdown = before + word + after;
     },
     onScroll() {
-      const moved = event.target;
-      if (moved === this.$refs.markdownInput) {
-        if (this.scrollTarget === this.$refs.markdownInput) return;
-        this.scrollTarget = this.$refs.htmlPreview;
-      } else {
-        if (this.scrollTarget === this.$refs.htmlPreview) return;
-        this.scrollTarget = this.$refs.markdownInput;
-      }
+      const scrollTrigger = event.target;
+      const scrollTarget = this.$refs.htmlPreview;
       const scrollRatio =
-        moved.scrollTop / (moved.scrollHeight - moved.clientHeight);
-      this.scrollTarget.scrollTo(
+        scrollTrigger.scrollTop /
+        (scrollTrigger.scrollHeight - scrollTrigger.clientHeight);
+      scrollTarget.scrollTo(
         0,
-        scrollRatio *
-          (this.scrollTarget.scrollHeight - this.scrollTarget.clientHeight)
+        scrollRatio * (scrollTarget.scrollHeight - scrollTarget.clientHeight)
       );
     },
     onKeyDown() {
