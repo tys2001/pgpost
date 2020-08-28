@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require('body-parser');
 const firebase = require("firebase");
 const https = require('https');
 const database = require('./src/db.js');
@@ -24,6 +25,8 @@ const config = app.get('env') === "development"
   : require('./config/prod.env.js');
 
 app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   renderPage("index", req, res);
@@ -78,9 +81,9 @@ app.get('/media/:fileName', (req, res) => {
 });
 
 const db = database(config);
-app.get('/db/:command', async (req, res) => {
+app.post('/db/:command', async (req, res) => {
   if (db[req.params.command]) {
-    const result = await db[req.params.command]();
+    const result = await db[req.params.command](req.body);
     res.json(result);
   }
   renderPage("404", req, res);
@@ -110,7 +113,9 @@ renderPage = async (articleId, req, res) => {
   if (!articleContentDoc.exists) res.redirect('/404');
   data.article.sections = articleContentDoc.data().sections;
 
-  const commonTopDoc = await firestore.collection("article-content").doc("common-top").get();
+  const commonTopDoc = await firestore.collection("article-content").doc(
+    articleId === "index" ? "index-header" : "common-header"
+  ).get();
   data.common.top = commonTopDoc.data().sections;
   const commonBottomDoc = await firestore.collection("article-content").doc("common-bottom").get();
   data.common.bottom = commonBottomDoc.data().sections;
