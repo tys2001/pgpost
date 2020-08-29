@@ -7,7 +7,6 @@
   margin: 0
 }
 
-
 .content-body p {
   margin: 10px 0;
 }
@@ -43,6 +42,11 @@
 .content-body *+h2,
 .content-body *+h3 {
   margin-top: 30px;
+}
+
+.content-body .dl > ul {
+  list-style: none;
+  padding: 0;
 }
 
 .content-body .dl > ul > li {
