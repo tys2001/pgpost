@@ -80,6 +80,13 @@ app.get('/media/:fileName', (req, res) => {
   });
 });
 
+app.get('/css/:fileName', async (req, res) => {
+  const cssDocs = await firestore.collection("css").doc(req.params.fileName).get();
+  const data = cssDocs.data();
+  res.set('Content-Type', "text/css; charset=UTF-8");
+  res.send(data.content);
+});
+
 const db = database(config);
 app.post('/db/:command', async (req, res) => {
   if (db[req.params.command]) {
@@ -99,11 +106,18 @@ renderPage = async (articleId, req, res) => {
     article: {},
     setting: {},
     common: {},
+    css: [],
     timestamp: timestamp,
     isPublish: (req.query.publish === "true") ? true : false
   };
   const settingDoc = await firestore.collection("settings").doc("setting").get();
   data.setting = settingDoc.data();
+
+  const cssDocs = await firestore.collection("css").get();
+  data.css = [];
+  cssDocs.forEach(doc => {
+    data.css.push(doc.data());
+  });
 
   const articleDoc = await firestore.collection("articles").doc(articleId).get();
   if (!articleDoc.exists) res.redirect('/404');

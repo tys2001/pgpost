@@ -7,6 +7,9 @@
       <b-tab title="カテゴリ">
         <CategoryEdit />
       </b-tab>
+      <b-tab title="CSS">
+        <CssEdit />
+      </b-tab>
       <b-tab title="設定">
         <SettingEdit />
       </b-tab>
@@ -23,12 +26,14 @@
 <script>
 import ArticleEdit from "@/components/ArticleEdit.vue";
 import CategoryEdit from "@/components/CategoryEdit.vue";
+import CssEdit from "@/components/CssEdit.vue";
 import SettingEdit from "@/components/SettingEdit.vue";
 import Publish from "@/components/Publish.vue";
 export default {
   components: {
     ArticleEdit,
     CategoryEdit,
+    CssEdit,
     SettingEdit,
     Publish,
   },

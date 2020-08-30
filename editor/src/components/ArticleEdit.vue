@@ -52,7 +52,7 @@
       <b-button @click="onClickEditContent" variant="primary" block>本文を編集する</b-button>
       <b-button @click="onClickPreView" variant="primary" block>プレビュー</b-button>
       <MarkdownEditor :articleId="draftItem.articleId" ref="markDownEditor" />
-      <b-button @click="onClickAdd" variant="primary">保存</b-button>
+      <b-button @click="onClickSave" variant="primary">保存</b-button>
       <b-button @click="onClickDelete" variant="danger">削除</b-button>
     </div>
   </div>
@@ -111,7 +111,7 @@ export default {
     onClickPreView() {
       window.open(`/${this.draftItem.articleId}`, "preview");
     },
-    async onClickAdd() {
+    async onClickSave() {
       await this.store.addArticle(this.draftItem);
       this.draftItem = null;
     },

@@ -9,9 +9,9 @@
 <link rel="apple-touch-icon-precomposed" href="/media/icon-180x180.png">
 <meta name="msapplication-TileImage" content="/media/icon-270x270.png">
 <title><%= (data.article.title?(data.article.title + " | "):"") + data.setting.siteName %></title>
-<link rel="stylesheet" type="text/css" href="/style.css?<%= data.timestamp %>">
-<link rel="stylesheet" type="text/css" href="/edit/content.css?<%= data.timestamp %>">
-<link rel="stylesheet" type="text/css" href="/edit/code-highlight.css?<%= data.timestamp %>">
+<% for (let css of data.css) { %>
+<link rel="stylesheet" type="text/css" href="/css/<%= css.cssName %>?<%= data.timestamp %>">
+<% } %>
 <meta name="description" content="<%= data.article.description %>">
 <meta name="thumbnail"
   content="<%= data.setting.publishUrl %><%= data.article.captionImage || '/media/icon-270x270.png' %>" />

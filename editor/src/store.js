@@ -15,11 +15,13 @@ export default {
     const storageRef = firebase.storage().ref();
     return {
       articles: [],
+      css: [],
       media: [],
       setting: {},
       async loadAll() {
         await Promise.all([
           this.loadArticles(),
+          this.loadCss(),
           this.loadSetting(),
           this.loadMedia()
         ]);
@@ -101,6 +103,22 @@ export default {
       },
       async saveContent(articleId, data) {
         await firestore.collection("article-content").doc(articleId).set(data);
+      },
+      async addCss(data) {
+        await firestore.collection("css").doc(data.cssName).set(data);
+        this.loadCss();
+      },
+      async deleteCss(data) {
+        await firestore.collection("css").doc(data.cssName).delete();
+        this.loadCss();
+      },
+      async loadCss() {
+        const docs = await firestore.collection("css").get();
+        this.css = [];
+        docs.forEach(doc => {
+          const data = doc.data();
+          this.css.push(data);
+        });
       },
     };
   }

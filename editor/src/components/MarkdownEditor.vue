@@ -29,6 +29,13 @@
     />
     <div v-html="htmlPreview" ref="htmlPreview" class="viewer content-body"></div>
     <ImageSelectModal ref="imageSelectModal" @input="onSelectImage" />
+    <link
+      v-for="css in store.css"
+      :key="css.cssName"
+      rel="stylesheet"
+      type="text/css"
+      :href="`/css/${css.cssName}`"
+    />
   </div>
 </template>
 
