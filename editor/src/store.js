@@ -3,13 +3,14 @@ import firebase from "firebase";
 export default {
   create() {
     firebase.initializeApp({
-      apiKey: "AIzaSyBxzmoDNJtculoSL4tEtTqoib_B-jmm74Q",
-      authDomain: "kkrdemo-17842.firebaseapp.com",
-      databaseURL: "https://kkrdemo-17842.firebaseio.com",
-      projectId: "kkrdemo-17842",
-      storageBucket: "kkrdemo-17842.appspot.com",
-      messagingSenderId: "919163321944",
-      appId: "1:919163321944:web:8001d8db7292c388d2542d"
+      apiKey: "AIzaSyB_m5uvIdIKbvW1ZWEphFQ_M22ERLLtLG0",
+      authDomain: "tysfb-ac05c.firebaseapp.com",
+      databaseURL: "https://tysfb-ac05c.firebaseio.com",
+      projectId: "tysfb-ac05c",
+      storageBucket: "tysfb-ac05c.appspot.com",
+      messagingSenderId: "746165169108",
+      appId: "1:746165169108:web:26381f1f5d41b674bb8441",
+      measurementId: "G-G1YYLRWCGS"
     });
     const firestore = firebase.firestore();
     const storageRef = firebase.storage().ref();

@@ -75,8 +75,6 @@ export default {
       const content = await this.store.getContent(this.articleId);
       this.sections = content.sections;
       this.selectedSection = this.sections[0];
-      console.log(this.sections);
-      console.log(this.selectedSection);
     },
     onClickExit() {
       this.shown = false;
@@ -136,14 +134,6 @@ export default {
       }
       return ret;
     },
-  },
-  watch: {
-    // scrollTarget(val) {
-    //   if (!val) return;
-    //   setTimeout(() => {
-    //     this.scrollTarget = null;
-    //   }, 100);
-    // }
   },
 };
 </script>
