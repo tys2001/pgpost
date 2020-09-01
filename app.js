@@ -35,11 +35,11 @@ app.get('/publish', async (req, res) => {
   const publishDoc = await firestore.collection("publish").doc("publish").get();
   const lastPublish = publishDoc.exists ? publishDoc.data().lastPublish : null;
 
-  const publishUrls = [
-    { url: "/style.css", path: "/style.css" },
-    { url: "/edit/content.css", path: "/edit/content.css" },
-    { url: "/edit/code-highlight.css", path: "/edit/code-highlight.css" }
-  ];
+  const publishUrls = [];
+  const cssDocs = await firestore.collection("css").get();
+  cssDocs.forEach(doc => {
+    publishUrls.push({ url: `/css/${doc.id}`, path: `/css/${doc.id}` });
+  });
   const pageDocs = await firestore.collection("articles").where("status", "==", "public").get();
   pageDocs.forEach(doc => {
     if (doc.id === "index") publishUrls.push({ url: `/?publish=true`, path: `/index.html` });

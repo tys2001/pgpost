@@ -14,13 +14,16 @@
       <div
         v-for="item in store.media"
         :key="item.fileName"
+        :title="item.fileName"
         class="thumbnail-outline"
         :selected="selectedMedia === item"
         @click="onClickMedia(item)"
+        @keydown.delete="onClickDelete"
       >
         <div class="thumbnail" :style="{ backgroundImage: `url(${item.mediaUrl})` }">
           <div class="square" />
         </div>
+        <b-button v-if="selectedMedia === item" @click="onClickDelete">削除</b-button>
       </div>
     </div>
   </b-modal>
@@ -29,12 +32,12 @@
 <script>
 export default {
   props: {
-    value: String
+    value: String,
   },
   data() {
     return {
       store: this.$store,
-      selectedMedia: null
+      selectedMedia: null,
     };
   },
   methods: {
@@ -51,6 +54,13 @@ export default {
       if (this.selectedMedia === item) this.selectedMedia = null;
       else this.selectedMedia = item;
     },
+    async onClickDelete() {
+      if (this.selectedMedia) {
+        if (!confirm(`本当に削除しますか？\n${this.selectedMedia.fileName}`))
+          return;
+        this.store.deleteMedia(this.selectedMedia.fileName);
+      }
+    },
     onClickOk() {
       if (this.selectedMedia) this.$emit("input", this.selectedMedia.mediaUrl);
       else this.$emit("input", "");
@@ -63,8 +73,8 @@ export default {
         ? event.target.files
         : event.dataTransfer.files;
       for (let file of files) this.store.addMedia(file);
-    }
-  }
+    },
+  },
 };
 </script>
 
