@@ -1,26 +1,26 @@
 <aside>
-  <% if (data.article.category.relation === "all_categories") { %>
-  <% for (let category of data.setting.categories) { %>
-  <% if (category.relation === "same_categories" && category.articles.length > 0) { %>
-  <div class="article-link-list-title"><%= category.categoryName %>の記事 (<%= category.articles.length %>)</div>
+  <% if (data.category.relation === "all_categories") { %>
+  <% for (let category of data.relatedPages) { %>
+  <% if (category.pages.length > 0) { %>
+  <div class="article-link-list-title"><%= category.categoryName %>の記事 (<%= category.pages.length %>)</div>
   <div class="article-link-list responsive-grid-column">
-    <% for (let article of category.articles) { %>
-    <a class="article-link" href="/<%= article.articleId %>">
-      <div class="article-link-image" style="background-image: url(<%=article.captionImage%>)"></div>
-      <div class="article-link-title"><%= article.title %></div>
+    <% for (let page of category.pages) { %>
+    <a class="article-link" href="/<%= page.pageId %>">
+      <div class="article-link-image" style="background-image: url(<%=page.captionImage%>)"></div>
+      <div class="article-link-title"><%= page.title %></div>
     </a>
     <% } %>
   </div>
   <% } %>
   <% } %>
-  <% } else if (data.article.category.relation === "same_categories") { %>
-  <% if (data.article.relatedArticles.length > 0) { %>
+  <% } else if (data.category.relation === "same_categories") { %>
+  <% if (data.relatedPages.length > 0) { %>
   <div class="article-link-list-title">関連記事</div>
   <div class="article-link-list responsive-grid-column">
-    <% for (let relatedArticle of data.article.relatedArticles) { %>
-    <a class="article-link" href="/<%= relatedArticle.articleId %>">
-      <div class="article-link-image" style="background-image: url(<%=relatedArticle.captionImage%>)"></div>
-      <div class="article-link-title"><%= relatedArticle.title %></div>
+    <% for (let page of data.relatedPages) { %>
+    <a class="article-link" href="/<%= page.pageId %>">
+      <div class="article-link-image" style="background-image: url(<%=page.captionImage%>)"></div>
+      <div class="article-link-title"><%= page.title %></div>
     </a>
     <% } %>
   </div>
@@ -28,7 +28,7 @@
   <% } %>
 </aside>
 <aside>
-  <% for (let section of data.common.bottom) { %>
+  <% for (let section of data.bottomContent.sections) { %>
   <%- section.html %>
   <% } %>
 </aside>

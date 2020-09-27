@@ -11,12 +11,14 @@
         empty-text="スタイルシートがありません"
         hover
       />
-      <b-button @click="onClickAddCss" variant="primary" block>新規作成</b-button>
+      <b-button @click="onClickAddCss" variant="primary" block
+        >新規作成</b-button
+      >
     </div>
     <div v-else class="edit-area">
       <b-button @click="onClickExitEdit" variant="primary" block>戻る</b-button>
       <b-input-group prepend="名前">
-        <b-input v-model="draftItem.cssName" />
+        <b-input v-model="draftItem.fileName" />
       </b-input-group>
       <b-form-textarea v-model="draftItem.content" rows="20"></b-form-textarea>
       <b-button @click="onClickSave" variant="primary">保存</b-button>
@@ -31,7 +33,7 @@ export default {
   data() {
     return {
       store: this.$store,
-      fields: [{ key: "cssName", label: "名前", sortable: true }],
+      fields: [{ key: "fileName", label: "名前", sortable: true }],
       draftItem: null,
     };
   },

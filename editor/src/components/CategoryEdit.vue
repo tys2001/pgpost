@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="edit-area">
+    <div v-if="!draftItem">
       <b-table
-        :items="draftItem.categories"
+        :items="store.categories"
         :fields="fields"
         @row-clicked="onClickRow"
         selectable
@@ -10,36 +10,28 @@
         show-empty
         empty-text="カテゴリがありません"
         hover
+      />
+      <b-button @click="onClickAddCategory" variant="primary" block
+        >新規作成</b-button
       >
-        <template v-slot:cell(buttons)="data">
-          <b-button-group size="sm">
-            <b-button @click="onClickDeleteCategory(data.item)">
-              <b-icon icon="trash-fill"></b-icon>
-            </b-button>
-            <b-button @click="onClickSwapUpCategory(data.item)">
-              <b-icon icon="caret-up-square-fill"></b-icon>
-            </b-button>
-            <b-button @click="onClickSwapDownCategory(data.item)">
-              <b-icon icon="caret-down-square-fill"></b-icon>
-            </b-button>
-          </b-button-group>
-        </template>
-      </b-table>
-      <b-button @click="onClickAddCategory" variant="primary" block>新規作成</b-button>
+    </div>
+    <div v-else class="edit-area">
+      <b-button @click="onClickExitEdit" variant="primary" block>戻る</b-button>
       <b-input-group prepend="カテゴリID">
-        <b-input v-model="editItem.categoryId" />
+        <b-input v-model="draftItem.categoryId" />
       </b-input-group>
       <b-input-group prepend="カテゴリ名">
-        <b-input v-model="editItem.categoryName" />
+        <b-input v-model="draftItem.categoryName" />
       </b-input-group>
       <b-input-group prepend="関連記事">
-        <b-form-select v-model="editItem.relation">
+        <b-form-select v-model="draftItem.relation">
           <option value="none">関連付けなし</option>
           <option value="same_categories">同じカテゴリへのリンクを表示</option>
           <option value="all_categories">全カテゴリへのリンクを表示</option>
         </b-form-select>
       </b-input-group>
-      <b-button @click="onClickSave" variant="primary" block>保存</b-button>
+      <b-button @click="onClickSave" variant="primary">保存</b-button>
+      <b-button @click="onClickDelete" variant="danger">削除</b-button>
     </div>
   </div>
 </template>
@@ -54,53 +46,32 @@ export default {
         { key: "categoryName", label: "カテゴリ名" },
         { key: "buttons", label: "" },
       ],
-      draftItem: {},
-      editItem: {},
+      draftItem: null,
     };
   },
-  mounted() {
-    this.draftItem = JSON.parse(JSON.stringify(this.store.setting));
-  },
+  mounted() {},
   methods: {
     onClickRow(item) {
-      this.editItem = item;
+      this.draftItem = item;
     },
     onClickAddCategory() {
-      if (!this.draftItem.categories)
-        this.$set(this.draftItem, "categories", []);
-      this.draftItem.categories.push({
+      this.draftItem = {
         categoryId: "",
         categoryName: "",
         relation: "none",
-      });
+      };
     },
-    onClickDeleteCategory(item) {
-      this.draftItem.categories = this.draftItem.categories.filter(
-        (d) => d !== item
-      );
+    onClickExitEdit() {
+      this.draftItem = null;
     },
-    onClickSwapUpCategory(item) {
-      const index = this.draftItem.categories.indexOf(item);
-      if (index === 0) return;
-      this.draftItem.categories.splice(
-        index - 1,
-        2,
-        this.draftItem.categories[index],
-        this.draftItem.categories[index - 1]
-      );
-    },
-    onClickSwapDownCategory(item) {
-      const index = this.draftItem.categories.indexOf(item);
-      if (index === this.draftItem.categories.length - 1) return;
-      this.draftItem.categories.splice(
-        index,
-        2,
-        this.draftItem.categories[index + 1],
-        this.draftItem.categories[index]
-      );
+    async onClickDelete() {
+      if (!confirm("削除しますか？")) return;
+      await this.store.deleteCategory(this.draftItem);
+      this.draftItem = null;
     },
     async onClickSave() {
-      this.store.saveSetting(this.draftItem);
+      await this.store.addCategory(this.draftItem);
+      this.draftItem = null;
     },
   },
 };

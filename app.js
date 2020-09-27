@@ -1,8 +1,12 @@
 const express = require("express");
 const bodyParser = require('body-parser');
-const firebase = require("firebase");
 const https = require('https');
+const cors = require('cors');
 const database = require('./src/db.js');
+const render = require('./src/render.js');
+const publish = require('./src/publish.js');
+
+const firebase = require("firebase");
 const firebaseConfig = {
   apiKey: "AIzaSyB_m5uvIdIKbvW1ZWEphFQ_M22ERLLtLG0",
   authDomain: "tysfb-ac05c.firebaseapp.com",
@@ -14,55 +18,27 @@ const firebaseConfig = {
   measurementId: "G-G1YYLRWCGS"
 }
 firebase.initializeApp(firebaseConfig);
-
 const firestore = firebase.firestore();
-const app = express();
-const timestamp = new Date().getTime();
 
+const app = express();
 const config = app.get('env') === "development"
   ? require('./config/dev.env.js')
   : require('./config/prod.env.js');
+const db = database(config, firestore);
+const rend = render(db);
+const pub = publish(db);
 
+app.use(cors());
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  renderPage("index", req, res);
+  rend.renderPage("index", req, res);
 });
 
-app.get('/publish', async (req, res) => {
-  const publishDoc = await firestore.collection("publish").doc("publish").get();
-  const lastPublish = publishDoc.exists ? publishDoc.data().lastPublish : null;
-
-  const publishUrls = [];
-  const cssDocs = await firestore.collection("css").get();
-  cssDocs.forEach(doc => {
-    publishUrls.push({ url: `/css/${doc.id}`, path: `/css/${doc.id}` });
-  });
-  const pageDocs = await firestore.collection("articles").where("status", "==", "public").get();
-  pageDocs.forEach(doc => {
-    if (doc.id === "index") publishUrls.push({ url: `/?publish=true`, path: `/index.html` });
-    else publishUrls.push({ url: `/${doc.id}?publish=true`, path: `/${doc.id}/index.html` });
-  });
-  const mediaDocs = lastPublish ?
-    await firestore.collection("media").where("updatedAt", ">", lastPublish).get()
-    : await firestore.collection("media").get();
-  mediaDocs.forEach(doc => {
-    publishUrls.push({ url: `/media/${doc.id}`, path: `/media/${doc.id}` });
-  });
-  res.json(publishUrls);
-});
-
-app.get('/publish-complete', async (req, res) => {
-  await firestore.collection("publish").doc("publish").set({
-    lastPublish: firebase.firestore.Timestamp.now()
-  });
-  res.end();
-});
-
-app.get('/:articleId', (req, res) => {
-  renderPage(req.params.articleId, req, res);
+app.get('/:pageId', (req, res) => {
+  rend.renderPage(req.params.pageId, req, res);
 });
 
 app.get('/media/:fileName', (req, res) => {
@@ -80,97 +56,32 @@ app.get('/media/:fileName', (req, res) => {
 });
 
 app.get('/css/:fileName', async (req, res) => {
-  const cssDocs = await firestore.collection("css").doc(req.params.fileName).get();
-  const data = cssDocs.data();
+  const data = await db.getStylesheet({ uid: "tysworks", obj: { fileName: req.params.fileName } });
   res.set('Content-Type', "text/css; charset=UTF-8");
   res.send(data.content);
 });
 
-const db = database(config);
-app.post('/db/:command', async (req, res) => {
+app.post('/api/:command', async (req, res) => {
   if (db[req.params.command]) {
-    const result = await db[req.params.command](req.body);
+    const result = await db[req.params.command]({ uid: "tysworks", obj: req.body });
     res.json(result);
   }
-  renderPage("404", req, res);
+  else res.json({ error: "No such db command" });
+});
+
+app.get('/publish/getUrls', async (req, res) => {
+  const publishUrls = await pub.getPublishUrls();
+  res.json(publishUrls);
+});
+
+app.get('/publish/complete', async (req, res) => {
+  await pub.publishComplete();
+  res.json({ message: "publish complete" });
 });
 
 app.use((req, res, next) => {
-  renderPage("404", req, res);
+  rend.renderPage("404", req, res);
 });
-
-renderPage = async (articleId, req, res) => {
-  const data = {
-    pageId: articleId,
-    article: {},
-    setting: {},
-    common: {},
-    css: [],
-    timestamp: timestamp,
-    isPublish: (req.query.publish === "true") ? true : false
-  };
-  const settingDoc = await firestore.collection("settings").doc("setting").get();
-  data.setting = settingDoc.data();
-
-  const cssDocs = await firestore.collection("css").get();
-  data.css = [];
-  cssDocs.forEach(doc => {
-    data.css.push(doc.data());
-  });
-
-  const articleDoc = await firestore.collection("articles").doc(articleId).get();
-  if (!articleDoc.exists) res.redirect('/404');
-  data.article = articleDoc.data();
-
-  const articleContentDoc = await firestore.collection("article-content").doc(articleId).get();
-  if (!articleContentDoc.exists) res.redirect('/404');
-  data.article.sections = articleContentDoc.data().sections;
-
-  const commonTopDoc = await firestore.collection("article-content").doc(
-    articleId === "index" ? "index-header" : "common-header"
-  ).get();
-  data.common.top = commonTopDoc.data().sections;
-  const commonBottomDoc = await firestore.collection("article-content").doc("common-bottom").get();
-  data.common.bottom = commonBottomDoc.data().sections;
-  const commonFooterDoc = await firestore.collection("article-content").doc("common-footer").get();
-  data.common.footer = commonFooterDoc.data().sections;
-
-  for (let category of data.setting.categories) {
-    if (category.categoryId === data.article.categoryId) {
-      data.article.category = category;
-    }
-  }
-
-  if (data.article.category.relation === "all_categories") {
-    for (let category of data.setting.categories) {
-      if (category.relation === "same_categories") {
-        const categoryArticlesDoc = await firestore.collection("articles")
-          .where("categoryId", "==", category.categoryId)
-          .where("status", "==", "public")
-          //.orderBy("articleId").limit(8)
-          .get();
-        category.articles = [];
-        categoryArticlesDoc.forEach(doc => {
-          category.articles.push(doc.data());
-        });
-      }
-    }
-  } else if (data.article.category.relation === "same_categories") {
-    const relatedArticlesDoc = await firestore.collection("articles")
-      .where("categoryId", "==", data.article.categoryId)
-      .where("status", "==", "public")
-      //.orderBy("articleId").limit(8)
-      .get();
-    data.article.relatedArticles = [];
-    relatedArticlesDoc.forEach(doc => {
-      if (doc.id !== data.article.articleId) data.article.relatedArticles.push(doc.data());
-    });
-  }
-
-  if (articleId === "404") res.status(404);
-  res.render("./page-root.ejs", { data });
-};
-
 
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Node.js is running at http://localhost:${server.address().port}`);

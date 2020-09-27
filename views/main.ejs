@@ -1,16 +1,16 @@
 <main>
   <article>
-    <% if (data.article.category.relation === "same_categories") { %>
-    <time class="published-date"><%= data.article.publishedDate %></time>
+    <% if (data.category.relation === "same_categories") { %>
+    <time class="published-date"><%= data.page.publishedDate %></time>
     <% } %>
-    <% if (data.article.title) { %>
-    <h1 class="content-title"><%= data.article.title %></h1>
+    <% if (data.page.title) { %>
+    <h1 class="content-title"><%= data.page.title %></h1>
     <% } %>
-    <% if (data.article.captionImage) { %>
-    <img class="eyecatch-image" src="<%= data.article.captionImage %>" />
+    <% if (data.page.captionImage) { %>
+    <img class="eyecatch-image" src="<%= data.page.captionImage %>" />
     <% } %>
     <div class="content-body">
-      <% for (let section of data.article.sections) { %>
+      <% for (let section of data.pageContent.sections) { %>
       <%- section.html %>
       <% } %>
     </div>

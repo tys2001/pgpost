@@ -8,11 +8,16 @@
       @dragover.prevent
       @dragleave.prevent
       @drop.prevent="onDropFile"
-    >アップロード</b-button>
+      >アップロード</b-button
+    >
     <input type="file" multiple ref="uploadFile" @change="onUploadFileChange" />
-    <div class="thumbnails-box" @drop.prevent.stop="onDropFile" @dragenter="onDropFile">
+    <div
+      class="thumbnails-box"
+      @drop.prevent.stop="onDropFile"
+      @dragenter="onDropFile"
+    >
       <div
-        v-for="item in store.media"
+        v-for="item in store.mediaFiles"
         :key="item.fileName"
         :title="item.fileName"
         class="thumbnail-outline"
@@ -20,10 +25,15 @@
         @click="onClickMedia(item)"
         @keydown.delete="onClickDelete"
       >
-        <div class="thumbnail" :style="{ backgroundImage: `url(${item.mediaUrl})` }">
+        <div
+          class="thumbnail"
+          :style="{ backgroundImage: `url(${store.basePath}${item.url})` }"
+        >
           <div class="square" />
         </div>
-        <b-button v-if="selectedMedia === item" @click="onClickDelete">削除</b-button>
+        <b-button v-if="selectedMedia === item" @click="onClickDelete"
+          >削除</b-button
+        >
       </div>
     </div>
   </b-modal>
@@ -43,8 +53,8 @@ export default {
   methods: {
     show() {
       this.selectedMedia = null;
-      for (let media of this.store.media) {
-        if (media.storageUrl === this.value) {
+      for (let media of this.store.mediaFiles) {
+        if (media.url === this.value) {
           this.selectedMedia = media;
         }
       }
@@ -58,21 +68,22 @@ export default {
       if (this.selectedMedia) {
         if (!confirm(`本当に削除しますか？\n${this.selectedMedia.fileName}`))
           return;
-        this.store.deleteMedia(this.selectedMedia.fileName);
+        this.store.deleteMediaFile(this.selectedMedia);
       }
     },
     onClickOk() {
-      if (this.selectedMedia) this.$emit("input", this.selectedMedia.mediaUrl);
+      if (this.selectedMedia) this.$emit("input", this.selectedMedia.url);
       else this.$emit("input", "");
     },
     onUploadFileChange() {
-      for (let file of this.$refs.uploadFile.files) this.store.addMedia(file);
+      for (let file of this.$refs.uploadFile.files)
+        this.store.addMediaFile(file);
     },
     onDropFile() {
       const files = event.target.files
         ? event.target.files
         : event.dataTransfer.files;
-      for (let file of files) this.store.addMedia(file);
+      for (let file of files) this.store.addMediaFile(file);
     },
   },
 };

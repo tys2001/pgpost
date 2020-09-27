@@ -12,114 +12,96 @@ export default {
       appId: "1:746165169108:web:26381f1f5d41b674bb8441",
       measurementId: "G-G1YYLRWCGS"
     });
-    const firestore = firebase.firestore();
     const storageRef = firebase.storage().ref();
+
+    const basePath = location.origin === "http://localhost:8080" ? "http://localhost:3000" : "";
+    const fetchJson = async (command, param = {}) => {
+      const response = await fetch(`${basePath}/api/${command}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(param)
+      })
+      return response.json();
+    };
     return {
-      articles: [],
+      basePath: basePath,
+      pages: [],
+      categories: [],
       css: [],
-      media: [],
+      mediaFiles: [],
       setting: {},
       async loadAll() {
         await Promise.all([
-          this.loadArticles(),
+          this.loadPages(),
+          this.loadCategories(),
           this.loadCss(),
           this.loadSetting(),
-          this.loadMedia()
+          this.loadMediaFiles()
         ]);
       },
-      async loadArticles() {
-        const docs = await firestore.collection("articles").get();
-        this.articles = [];
-        docs.forEach(doc => {
-          const data = doc.data();
-          this.articles.push(data);
-        });
+      async loadPages() {
+        this.pages = await fetchJson("getPages");
       },
-      async addArticle(data) {
-        data.updatedAt = firebase.firestore.Timestamp.now();
-        await firestore.collection("articles").doc(data.articleId).set(data);
-        this.loadArticles();
+      async addPage(data) {
+        await fetchJson("addPage", data);
+        this.loadPages();
       },
-      async deleteArticle(data) {
-        await firestore.collection("articles").doc(data.articleId).delete();
-        this.loadArticles();
+      async deletePage(data) {
+        await fetchJson("deletePage", data);
+        this.loadPages();
+      },
+      async loadCategories() {
+        this.categories = await fetchJson("getCategories");
+      },
+      async addCategory(data) {
+        await fetchJson("addCategory", data);
+        this.loadCategories();
+      },
+      async deleteCategory(data) {
+        await fetchJson("deleteCategory", data);
+        this.loadCategories();
       },
       async loadSetting() {
-        const doc = await firestore.collection("settings").doc("setting").get();
-        this.setting = doc.data();
+        this.setting = await fetchJson("getSetting", { settingId: "base" });
       },
       async saveSetting(data) {
-        await firestore.collection("settings").doc("setting").set(data);
+        await fetchJson("addSetting", data);
         this.loadSetting();
       },
-      async loadMedia() {
-        const docs = await firestore.collection("media").orderBy("updatedAt", "desc").get();
-        this.media = [];
-        docs.forEach(doc => {
-          const data = doc.data();
-          this.media.push(data);
-        });
+      async loadMediaFiles() {
+        this.mediaFiles = await fetchJson("getFiles");
       },
-      async addMedia(file) {
+      async addMediaFile(file) {
         const fileRef = storageRef.child(file.name);
         await fileRef.put(file);
-        const storageUrl = await fileRef.getDownloadURL();
-        await firestore.collection("media").doc(file.name)
-          .set({
-            fileName: file.name,
-            mediaUrl: `/media/${file.name}`,
-            storageUrl: storageUrl,
-            updatedAt: firebase.firestore.Timestamp.now()
-          });
-        this.loadMedia();
+        await fetchJson("addFile", {
+          fileName: file.name,
+          url: `/media/${file.name}`
+        });
+        this.loadMediaFiles();
       },
-      async deleteMedia(fileName) {
-        const fileRef = storageRef.child(fileName);
+      async deleteMediaFile(data) {
+        const fileRef = storageRef.child(data.fileName);
         await fileRef.delete();
-        await firestore.collection("media").doc(fileName).delete();
-        this.loadMedia();
+        await fetchJson("deleteFile", data);
+        this.loadMediaFiles();
       },
-      async getContent(articleId) {
-        const doc = await firestore.collection("article-content").doc(articleId).get();
-        if (doc.exists) {
-          const data = doc.data();
-          if (data.sections) return data;
-          else return {
-            sections: [
-              {
-                markdown: data.markdown,
-                html: data.html,
-              }
-            ]
-          };
-        }
-        else return {
-          sections: [
-            {
-              markdown: "",
-              html: "",
-            }
-          ]
-        };
+      async getContent(pageId) {
+        return await fetchJson("getPageContent", { pageId: pageId });
       },
-      async saveContent(articleId, data) {
-        await firestore.collection("article-content").doc(articleId).set(data);
+      async saveContent(data) {
+        await fetchJson("addPageContent", data);
       },
       async addCss(data) {
-        await firestore.collection("css").doc(data.cssName).set(data);
+        await fetchJson("addStylesheet", data);
         this.loadCss();
       },
       async deleteCss(data) {
-        await firestore.collection("css").doc(data.cssName).delete();
+        await fetchJson("deleteStylesheet", data);
         this.loadCss();
       },
       async loadCss() {
-        const docs = await firestore.collection("css").get();
-        this.css = [];
-        docs.forEach(doc => {
-          const data = doc.data();
-          this.css.push(data);
-        });
+        this.css = await fetchJson("getStylesheets");
       },
     };
   }

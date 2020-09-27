@@ -19,7 +19,7 @@
       <div class="tool-icon" @click="onClickAddSection">
         <b-icon icon="plus"></b-icon>
       </div>
-      <div class="message">{{message}}</div>
+      <div class="message">{{ message }}</div>
     </div>
     <textarea
       v-model="selectedSection.markdown"
@@ -27,15 +27,8 @@
       class="writer"
       @scroll="onScroll"
     />
-    <div v-html="htmlPreview" ref="htmlPreview" class="viewer content-body"></div>
+    <iframe ref="previewIframe" class="viewer" />
     <ImageSelectModal ref="imageSelectModal" @input="onSelectImage" />
-    <link
-      v-for="css in store.css"
-      :key="css.cssName"
-      rel="stylesheet"
-      type="text/css"
-      :href="`/css/${css.cssName}`"
-    />
   </div>
 </template>
 
@@ -48,7 +41,7 @@ export default {
     ImageSelectModal,
   },
   props: {
-    articleId: String,
+    pageId: String,
   },
   data() {
     return {
@@ -69,10 +62,22 @@ export default {
       },
     });
   },
+  mounted() {
+    const iframeDocument = this.$refs.previewIframe.contentWindow.document;
+    for (let css of this.store.css) {
+      const link = document.createElement("link");
+      link.setAttribute("rel", "stylesheet");
+      link.setAttribute("type", "text/css");
+      link.setAttribute("href", `${this.store.basePath}/css/${css.fileName}`);
+      iframeDocument.head.appendChild(link);
+    }
+    this.previewElement = document.createElement("main");
+    iframeDocument.body.appendChild(this.previewElement);
+  },
   methods: {
     async open() {
       this.shown = true;
-      const content = await this.store.getContent(this.articleId);
+      const content = await this.store.getContent(this.pageId);
       this.sections = content.sections;
       this.selectedSection = this.sections[0];
     },
@@ -83,7 +88,8 @@ export default {
       for (let section of this.sections) {
         section.html = marked(section.markdown);
       }
-      await this.store.saveContent(this.articleId, {
+      await this.store.saveContent({
+        pageId: this.pageId,
         sections: this.sections,
       });
       this.message = `Saved at ${new Date().toLocaleString()}`;
@@ -102,7 +108,7 @@ export default {
     },
     onScroll() {
       const scrollTrigger = event.target;
-      const scrollTarget = this.$refs.htmlPreview;
+      const scrollTarget = this.previewElement;
       const scrollRatio =
         scrollTrigger.scrollTop /
         (scrollTrigger.scrollHeight - scrollTrigger.clientHeight);
@@ -121,10 +127,6 @@ export default {
     },
   },
   computed: {
-    htmlPreview() {
-      if (this.selectedSection) return marked(this.selectedSection.markdown);
-      else return "";
-    },
     sectionSelectOptions() {
       const ret = [];
       for (let section of this.sections) {
@@ -133,6 +135,11 @@ export default {
         ret.push({ text: title, value: section });
       }
       return ret;
+    },
+  },
+  watch: {
+    "selectedSection.markdown"() {
+      this.previewElement.innerHTML = marked(this.selectedSection.markdown);
     },
   },
 };
@@ -203,5 +210,8 @@ export default {
   grid-row-start: 2;
   overflow-x: hidden;
   overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 </style>

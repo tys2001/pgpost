@@ -2,7 +2,7 @@
   <div>
     <div v-if="!draftItem">
       <b-table
-        :items="store.articles"
+        :items="store.pages"
         :fields="fields"
         @row-clicked="onClickRow"
         selectable
@@ -11,12 +11,14 @@
         empty-text="ページがありません"
         hover
       />
-      <b-button @click="onClickAddArticle" variant="primary" block>新規作成</b-button>
+      <b-button @click="onClickAddPage" variant="primary" block
+        >新規作成</b-button
+      >
     </div>
     <div v-else class="edit-area">
       <b-button @click="onClickExitEdit" variant="primary" block>戻る</b-button>
       <b-input-group prepend="ページID">
-        <b-input v-model="draftItem.articleId" />
+        <b-input v-model="draftItem.pageId" />
       </b-input-group>
       <b-input-group prepend="タイトル">
         <b-input v-model="draftItem.title" />
@@ -24,15 +26,25 @@
       <b-input-group prepend="カテゴリ">
         <b-form-select
           v-model="draftItem.categoryId"
-          :options="store.setting.categories"
+          :options="store.categories"
           value-field="categoryId"
           text-field="categoryName"
         />
       </b-input-group>
       <b-input-group prepend="キャプション画像">
-        <div class="thumbnail" :style="{ backgroundImage: `url(${draftItem.captionImage})` }" />
-        <b-button @click="$refs.imageSelectModal.show()" variant="primary">select</b-button>
-        <ImageSelectModal ref="imageSelectModal" v-model="draftItem.captionImage" />
+        <div
+          class="thumbnail"
+          :style="{
+            backgroundImage: `url(${store.basePath}${draftItem.captionImage})`,
+          }"
+        />
+        <b-button @click="$refs.imageSelectModal.show()" variant="primary"
+          >select</b-button
+        >
+        <ImageSelectModal
+          ref="imageSelectModal"
+          v-model="draftItem.captionImage"
+        />
       </b-input-group>
       <b-input-group prepend="概要">
         <b-input v-model="draftItem.description" />
@@ -49,9 +61,13 @@
       <b-input-group prepend="変更日">
         <b-form-datepicker v-model="draftItem.modifiedDate" />
       </b-input-group>
-      <b-button @click="onClickEditContent" variant="primary" block>本文を編集する</b-button>
-      <b-button @click="onClickPreView" variant="primary" block>プレビュー</b-button>
-      <MarkdownEditor :articleId="draftItem.articleId" ref="markDownEditor" />
+      <b-button @click="onClickEditContent" variant="primary" block
+        >本文を編集する</b-button
+      >
+      <b-button @click="onClickPreView" variant="primary" block
+        >プレビュー</b-button
+      >
+      <MarkdownEditor :pageId="draftItem.pageId" ref="markDownEditor" />
       <b-button @click="onClickSave" variant="primary">保存</b-button>
       <b-button @click="onClickDelete" variant="danger">削除</b-button>
     </div>
@@ -70,7 +86,7 @@ export default {
     return {
       store: this.$store,
       fields: [
-        { key: "articleId", label: "ID", sortable: true },
+        { key: "pageId", label: "ID", sortable: true },
         { key: "title", label: "タイトル", sortable: true },
         {
           key: "categoryId",
@@ -87,9 +103,9 @@ export default {
   },
   mounted() {},
   methods: {
-    onClickAddArticle() {
+    onClickAddPage() {
       this.draftItem = {
-        articleId: "",
+        pageId: "",
         title: "",
         categoryId: "",
         captionImage: "",
@@ -109,22 +125,22 @@ export default {
       this.$refs.markDownEditor.open();
     },
     onClickPreView() {
-      window.open(`/${this.draftItem.articleId}`, "preview");
+      window.open(`/${this.draftItem.pageId}`, "preview");
     },
     async onClickSave() {
-      await this.store.addArticle(this.draftItem);
+      await this.store.addPage(this.draftItem);
       this.draftItem = null;
     },
     async onClickDelete() {
       if (!confirm("このページを削除しますか？")) return;
-      await this.store.deleteArticle(this.draftItem);
+      await this.store.deletePage(this.draftItem);
       this.draftItem = null;
     },
   },
   computed: {
     categoryDict() {
       const dict = {};
-      for (let category of this.store.setting.categories) {
+      for (let category of this.store.categories) {
         dict[category.categoryId] = category;
       }
       return dict;
