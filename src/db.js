@@ -1,30 +1,30 @@
 const pg = require('pg');
 const fs = require("fs").promises;
 
-module.exports = (config, firestore) => {
+module.exports = (config) => {
   const pool = new pg.Pool(config.pgconf);
   return {
-    async test() {
-      const { rows } = await pool.query('SELECT NOW()');
-      return rows;
-    },
-    async init() {
-      const { rows } = await pool.query("\
-        DROP TABLE IF EXISTS pages; \
-        DROP TABLE IF EXISTS page_contents; \
-        DROP TABLE IF EXISTS categories;\
-        DROP TABLE IF EXISTS stylesheets;\
-        DROP TABLE IF EXISTS settings;\
-        DROP TABLE IF EXISTS files;\
-        CREATE TABLE pages(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid));\
-        CREATE TABLE page_contents(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid));\
-        CREATE TABLE categories(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid));\
-        CREATE TABLE stylesheets(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid)); \
-        CREATE TABLE settings(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid)); \
-        CREATE TABLE files(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, file bytea, PRIMARY KEY(uid, cid)); \
-      ");
-      return rows;
-    },
+    // async test() {
+    //   const { rows } = await pool.query('SELECT NOW()');
+    //   return rows;
+    // },
+    // async init() {
+    //   const { rows } = await pool.query("\
+    //     DROP TABLE IF EXISTS pages; \
+    //     DROP TABLE IF EXISTS page_contents; \
+    //     DROP TABLE IF EXISTS categories;\
+    //     DROP TABLE IF EXISTS stylesheets;\
+    //     DROP TABLE IF EXISTS settings;\
+    //     DROP TABLE IF EXISTS files;\
+    //     CREATE TABLE pages(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid));\
+    //     CREATE TABLE page_contents(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid));\
+    //     CREATE TABLE categories(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid));\
+    //     CREATE TABLE stylesheets(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid)); \
+    //     CREATE TABLE settings(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, PRIMARY KEY(uid, cid)); \
+    //     CREATE TABLE files(uid varchar(100) NOT NULL, cid varchar(100) NOT NULL, obj jsonb, file bytea, PRIMARY KEY(uid, cid)); \
+    //   ");
+    //   return rows;
+    // },
     async addPage(param) {
       const { rows } = await pool.query(
         "insert into pages (uid, cid, obj) values ($1, $2, $3)\
@@ -185,74 +185,5 @@ module.exports = (config, firestore) => {
       ", [param.uid]);
       return rows.map(r => r.obj);
     },
-    async trans(req, res) {
-      await this.init();
-      const doc1 = await firestore.collection("articles").get();
-      doc1.forEach(doc => {
-        const data = doc.data()
-        this.addPage({
-          uid: "tysworks", obj: {
-            pageId: data.articleId,
-            title: data.title,
-            description: data.description,
-            captionImage: data.captionImage,
-            categoryId: data.categoryId,
-            publishedDate: data.publishedDate,
-            modifiedDate: data.modifiedDate,
-            status: data.status
-          }
-        });
-      });
-      const doc2 = await firestore.collection("article-content").get();
-      doc2.forEach(doc => {
-        const data = doc.data()
-        this.addPageContent({
-          uid: "tysworks", obj: {
-            pageId: doc.id,
-            sections: data.sections
-          }
-        });
-      });
-      const doc3 = await firestore.collection("settings").doc("setting").get();
-      const setting = doc3.data();
-      this.addSetting({
-        uid: "tysworks", obj: {
-          settingId: "base",
-          siteName: setting.siteName,
-          publishUrl: setting.publishUrl
-        }
-      });
-      for (let category of setting.categories) {
-        this.addCategory({
-          uid: "tysworks", obj: {
-            categoryId: category.categoryId,
-            categoryName: category.categoryName,
-            relation: category.relation
-          }
-        });
-      }
-      const doc4 = await firestore.collection("css").get();
-      doc4.forEach(doc => {
-        const data = doc.data()
-        this.addStylesheet({
-          uid: "tysworks", obj: {
-            fileName: doc.id,
-            content: data.content
-          }
-        });
-      });
-      const doc5 = await firestore.collection("media").get();
-      doc5.forEach(doc => {
-        const data = doc.data()
-        this.addFile({
-          uid: "tysworks", obj: {
-            fileName: doc.id,
-            url: data.mediaUrl,
-            updatedTimestamp: new Date().getTime()
-          }
-        });
-      });
-      return { message: "db trans completed." }
-    }
   }
 }
