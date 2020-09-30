@@ -49,6 +49,7 @@ module.exports = (db) => {
             });
           }
         }
+        data.relatedPages = data.relatedPages.sort((a, b) => b.pages.length - a.pages.length);
       } else if (data.category.relation === "same_categories") {
         data.relatedPages = await db.getPages({
           uid: "tysworks",
@@ -57,6 +58,7 @@ module.exports = (db) => {
             status: "public"
           }
         });
+        data.relatedPages = data.relatedPages.filter(page => page.pageId !== data.pageId);
       }
 
       if (pageId === "404") res.status(404);
