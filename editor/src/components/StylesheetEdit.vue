@@ -2,7 +2,7 @@
   <div>
     <div v-if="!draftItem">
       <b-table
-        :items="store.css"
+        :items="store.stylesheets"
         :fields="fields"
         @row-clicked="onClickRow"
         selectable
@@ -11,9 +11,7 @@
         empty-text="スタイルシートがありません"
         hover
       />
-      <b-button @click="onClickAddCss" variant="primary" block
-        >新規作成</b-button
-      >
+      <b-button @click="onClickAdd" variant="primary" block>新規作成</b-button>
     </div>
     <div v-else class="edit-area">
       <b-button @click="onClickExitEdit" variant="primary" block>戻る</b-button>
@@ -39,7 +37,7 @@ export default {
   },
   mounted() {},
   methods: {
-    onClickAddCss() {
+    onClickAdd() {
       this.draftItem = {
         cssName: "",
         content: "",
@@ -52,12 +50,12 @@ export default {
       this.draftItem = null;
     },
     async onClickSave() {
-      await this.store.addCss(this.draftItem);
+      await this.store.addStylesheet(this.draftItem);
       this.draftItem = null;
     },
     async onClickDelete() {
-      if (!confirm("このスタイルシートを削除しますか？")) return;
-      await this.store.deleteCss(this.draftItem);
+      if (!confirm("削除しますか？")) return;
+      await this.store.deleteStylesheet(this.draftItem);
       this.draftItem = null;
     },
   },

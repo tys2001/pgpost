@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const https = require('https');
+const multer = require('multer');
+const upload = multer({ dest: './uploads/' });
 const cors = require('cors');
 const database = require('./src/db.js');
 const render = require('./src/render.js');
@@ -41,7 +43,7 @@ app.get('/:pageId', (req, res) => {
   rend.renderPage(req.params.pageId, req, res);
 });
 
-app.get('/media/:fileName', (req, res) => {
+app.get('/mediax/:fileName', (req, res) => {
   const url = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${req.params.fileName}?alt=media`
   https.get(url, (httpRes) => {
     const data = [];
@@ -55,15 +57,25 @@ app.get('/media/:fileName', (req, res) => {
   });
 });
 
+app.get('/media/:fileName', async (req, res) => {
+  const file = await db.getFile({ uid: "tysworks", obj: { fileName: req.params.fileName } });
+  if (file) {
+    res.set('Content-Type', file.contentType);
+    res.send(file.data);
+  } else {
+    res.end();
+  }
+});
+
 app.get('/css/:fileName', async (req, res) => {
   const data = await db.getStylesheet({ uid: "tysworks", obj: { fileName: req.params.fileName } });
   res.set('Content-Type', "text/css; charset=UTF-8");
   res.send(data.content);
 });
 
-app.post('/api/:command', async (req, res) => {
+app.post('/api/:command', upload.single("file"), async (req, res) => {
   if (db[req.params.command]) {
-    const result = await db[req.params.command]({ uid: "tysworks", obj: req.body });
+    const result = await db[req.params.command]({ uid: "tysworks", obj: req.body, file: req.file });
     res.json(result);
   }
   else res.json({ error: "No such db command" });

@@ -11,9 +11,7 @@
         empty-text="ページがありません"
         hover
       />
-      <b-button @click="onClickAddPage" variant="primary" block
-        >新規作成</b-button
-      >
+      <b-button @click="onClickAdd" variant="primary" block>新規作成</b-button>
     </div>
     <div v-else class="edit-area">
       <b-button @click="onClickExitEdit" variant="primary" block>戻る</b-button>
@@ -103,7 +101,7 @@ export default {
   },
   mounted() {},
   methods: {
-    onClickAddPage() {
+    onClickAdd() {
       this.draftItem = {
         pageId: "",
         title: "",
@@ -132,7 +130,7 @@ export default {
       this.draftItem = null;
     },
     async onClickDelete() {
-      if (!confirm("このページを削除しますか？")) return;
+      if (!confirm("削除しますか？")) return;
       await this.store.deletePage(this.draftItem);
       this.draftItem = null;
     },

@@ -2,13 +2,13 @@
   <div>
     <b-tabs v-if="ready" pills card>
       <b-tab title="ページ" active>
-        <ArticleEdit />
+        <PageEdit />
       </b-tab>
       <b-tab title="カテゴリ">
         <CategoryEdit />
       </b-tab>
       <b-tab title="CSS">
-        <CssEdit />
+        <StylesheetEdit />
       </b-tab>
       <b-tab title="設定">
         <SettingEdit />
@@ -24,16 +24,16 @@
 </template>
 
 <script>
-import ArticleEdit from "@/components/ArticleEdit.vue";
+import PageEdit from "@/components/PageEdit.vue";
 import CategoryEdit from "@/components/CategoryEdit.vue";
-import CssEdit from "@/components/CssEdit.vue";
+import StylesheetEdit from "@/components/StylesheetEdit.vue";
 import SettingEdit from "@/components/SettingEdit.vue";
 import Publish from "@/components/Publish.vue";
 export default {
   components: {
-    ArticleEdit,
+    PageEdit,
     CategoryEdit,
-    CssEdit,
+    StylesheetEdit,
     SettingEdit,
     Publish,
   },

@@ -23,18 +23,27 @@ export default {
       })
       return response.json();
     };
+    const fetchFile = async (command, file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch(`${basePath}/api/${command}`, {
+        method: "POST",
+        body: formData
+      })
+      return response.json();
+    };
     return {
       basePath: basePath,
       pages: [],
       categories: [],
-      css: [],
+      stylesheets: [],
       mediaFiles: [],
       setting: {},
       async loadAll() {
         await Promise.all([
           this.loadPages(),
           this.loadCategories(),
-          this.loadCss(),
+          this.loadStylesheets(),
           this.loadSetting(),
           this.loadMediaFiles()
         ]);
@@ -71,7 +80,7 @@ export default {
       async loadMediaFiles() {
         this.mediaFiles = await fetchJson("getFiles");
       },
-      async addMediaFile(file) {
+      async addMediaFile_old(file) {
         const fileRef = storageRef.child(file.name);
         await fileRef.put(file);
         await fetchJson("addFile", {
@@ -80,9 +89,13 @@ export default {
         });
         this.loadMediaFiles();
       },
+      async addMediaFile(file) {
+        await fetchFile("addFile", file);
+        this.loadMediaFiles();
+      },
       async deleteMediaFile(data) {
-        const fileRef = storageRef.child(data.fileName);
-        await fileRef.delete();
+        // const fileRef = storageRef.child(data.fileName);
+        // await fileRef.delete();
         await fetchJson("deleteFile", data);
         this.loadMediaFiles();
       },
@@ -92,16 +105,16 @@ export default {
       async saveContent(data) {
         await fetchJson("addPageContent", data);
       },
-      async addCss(data) {
+      async addStylesheet(data) {
         await fetchJson("addStylesheet", data);
-        this.loadCss();
+        this.loadStylesheets();
       },
-      async deleteCss(data) {
+      async deleteStylesheet(data) {
         await fetchJson("deleteStylesheet", data);
-        this.loadCss();
+        this.loadStylesheets();
       },
-      async loadCss() {
-        this.css = await fetchJson("getStylesheets");
+      async loadStylesheets() {
+        this.stylesheets = await fetchJson("getStylesheets");
       },
     };
   }

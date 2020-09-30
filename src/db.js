@@ -1,4 +1,5 @@
 const pg = require('pg');
+const fs = require("fs").promises;
 
 module.exports = (config, firestore) => {
   const pool = new pg.Pool(config.pgconf);
@@ -144,11 +145,21 @@ module.exports = (config, firestore) => {
       return rows[0] ? rows[0].obj : null;
     },
     async addFile(param) {
-      param.obj.updatedTimestamp = new Date().getTime();
+      const fileBinary = "\\x" + await fs.readFile(param.file.path, "hex");
       const { rows } = await pool.query(
-        "insert into files (uid, cid, obj) values ($1, $2, $3)\
-        on conflict (uid, cid) do update set obj = $3",
-        [param.uid, param.obj.fileName, param.obj]
+        "insert into files (uid, cid, obj, file) values ($1, $2, $3, $4)\
+        on conflict (uid, cid) do update set obj = $3, file = $4",
+        [
+          param.uid,
+          param.file.originalname,
+          {
+            fileName: param.file.originalname,
+            url: `/media/${param.file.originalname}`,
+            contentType: param.file.mimetype,
+            updatedTimestamp: new Date().getTime(),
+          },
+          fileBinary
+        ]
       );
       return rows;
     },
@@ -158,6 +169,13 @@ module.exports = (config, firestore) => {
         [param.uid, param.obj.fileName]
       );
       return rows;
+    },
+    async getFile(param) {
+      const { rows } = await pool.query(
+        "select obj, file from files where uid=$1 and cid=$2",
+        [param.uid, param.obj.fileName]
+      );
+      return rows[0] ? { data: rows[0].file, contentType: rows[0].obj.contentType } : null;
     },
     async getFiles(param) {
       const { rows } = await pool.query("\

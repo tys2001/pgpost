@@ -11,9 +11,7 @@
         empty-text="カテゴリがありません"
         hover
       />
-      <b-button @click="onClickAddCategory" variant="primary" block
-        >新規作成</b-button
-      >
+      <b-button @click="onClickAdd" variant="primary" block>新規作成</b-button>
     </div>
     <div v-else class="edit-area">
       <b-button @click="onClickExitEdit" variant="primary" block>戻る</b-button>
@@ -54,7 +52,7 @@ export default {
     onClickRow(item) {
       this.draftItem = item;
     },
-    onClickAddCategory() {
+    onClickAdd() {
       this.draftItem = {
         categoryId: "",
         categoryName: "",

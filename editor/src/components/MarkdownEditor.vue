@@ -64,7 +64,7 @@ export default {
   },
   mounted() {
     const iframeDocument = this.$refs.previewIframe.contentWindow.document;
-    for (let css of this.store.css) {
+    for (let css of this.store.stylesheets) {
       const link = document.createElement("link");
       link.setAttribute("rel", "stylesheet");
       link.setAttribute("type", "text/css");
