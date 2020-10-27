@@ -24,6 +24,10 @@ app.get('/', (req, res) => {
   rend.renderPage("index", req, res);
 });
 
+app.get('/sitemap.xml', async (req, res) => {
+  rend.renderSitemap(req, res);
+});
+
 app.get('/:pageId', (req, res) => {
   rend.renderPage(req.params.pageId, req, res);
 });

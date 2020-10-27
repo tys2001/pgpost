@@ -108,7 +108,7 @@ export default {
     },
     onScroll() {
       const scrollTrigger = event.target;
-      const scrollTarget = this.previewElement;
+      const scrollTarget = this.previewElement.parentElement;
       const scrollRatio =
         scrollTrigger.scrollTop /
         (scrollTrigger.scrollHeight - scrollTrigger.clientHeight);

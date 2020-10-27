@@ -20,6 +20,7 @@ module.exports = (db) => {
           publishUrls.push({ url: mediaFile.url, path: mediaFile.url });
         }
       }
+      publishUrls.push({ url: `/sitemap.xml`, path: `/sitemap.xml` });
       return publishUrls;
     },
     async publishComplete() {

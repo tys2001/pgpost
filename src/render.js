@@ -63,6 +63,19 @@ module.exports = (db) => {
 
       if (pageId === "404") res.status(404);
       res.render("./page-root.ejs", { data });
+    },
+    async renderSitemap(req, res) {
+      const data = {
+        urls: [],
+      };
+      const setting = await db.getSetting({ uid: "tysworks", obj: { settingId: "base" } });
+      const pages = await db.getPages({ uid: "tysworks", obj: { status: "public" } });
+      for (let page of pages) {
+        if (page.pageId === "index") data.urls.push({ loc: `${setting.publishUrl}/` });
+        else if (page.pageId === "404") continue;
+        else data.urls.push({ loc: `${setting.publishUrl}/${page.pageId}` });
+      }
+      res.render("./sitemap.ejs", { data });
     }
   }
 }
