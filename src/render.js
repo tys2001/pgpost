@@ -73,7 +73,7 @@ module.exports = (db) => {
       for (let page of pages) {
         if (page.pageId === "index") data.urls.push({ loc: `${setting.publishUrl}/` });
         else if (page.pageId === "404") continue;
-        else data.urls.push({ loc: `${setting.publishUrl}/${page.pageId}` });
+        else data.urls.push({ loc: `${setting.publishUrl}/${page.pageId}/` });
       }
       res.render("./sitemap.ejs", { data });
     }
