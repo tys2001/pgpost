@@ -71,7 +71,8 @@ export default {
       link.setAttribute("href", `${this.store.basePath}/css/${css.fileName}`);
       iframeDocument.head.appendChild(link);
     }
-    this.previewElement = document.createElement("main");
+    this.previewElement = document.createElement("article");
+    this.previewElement.classList.add("content");
     iframeDocument.body.appendChild(this.previewElement);
   },
   methods: {

@@ -1,4 +1,4 @@
-<aside>
+<aside class="links">
   <% if (data.category.relation === "all_categories") { %>
   <% for (let category of data.relatedPages) { %>
   <% if (category.pages.length > 0) { %>
@@ -27,7 +27,7 @@
   <% } %>
   <% } %>
 </aside>
-<aside>
+<aside class="content">
   <% for (let section of data.bottomContent.sections) { %>
   <%- section.html %>
   <% } %>
