@@ -4,10 +4,10 @@
 <% if (data.page.status === "noindex" || !data.isPublish) { %>
 <meta name="robots" content="noindex">
 <% } %>
-<link rel="icon" href="/media/icon-32x32.png" sizes="32x32">
-<link rel="icon" href="/media/icon-192x192.png" sizes="192x192">
-<link rel="apple-touch-icon-precomposed" href="/media/icon-180x180.png">
-<meta name="msapplication-TileImage" content="/media/icon-270x270.png">
+<link rel="icon" href="/media/icon-32x32.png?<%= data.timestamp %>" sizes="32x32">
+<link rel="icon" href="/media/icon-192x192.png?<%= data.timestamp %>" sizes="192x192">
+<link rel="apple-touch-icon-precomposed" href="/media/icon-180x180.png?<%= data.timestamp %>">
+<meta name="msapplication-TileImage" content="/media/icon-270x270.png?<%= data.timestamp %>">
 <title><%= (data.page.title?(data.page.title + " | "):"") + data.setting.siteName %></title>
 <% for (let stylesheet of data.stylesheets) { %>
 <link rel="stylesheet" type="text/css" href="/css/<%= stylesheet.fileName %>?<%= data.timestamp %>">
