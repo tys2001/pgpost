@@ -1,6 +1,6 @@
 <main>
   <article class="content">
-    <% if (data.category.relation === "same_categories") { %>
+    <% if (data.page.type === "post") { %>
     <time class="published-date"><%= data.page.publishedDate %></time>
     <% } %>
     <% if (data.page.title) { %>

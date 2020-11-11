@@ -1,11 +1,11 @@
 <template>
   <div v-show="shown" class="mde-container" fullscreen @keydown="onKeyDown">
     <div class="toolbar">
-      <div class="tool-icon" @click="onClickSave">
-        <b-icon icon="upload"></b-icon>
-      </div>
       <div class="tool-icon" @click="onClickExit">
-        <b-icon icon="door-closed"></b-icon>
+        <b-icon icon="x-square"></b-icon>
+      </div>
+      <div class="tool-icon" @click="onClickSave">
+        <b-icon icon="file-earmark-check"></b-icon>
       </div>
       <div class="tool-icon" @click="$refs.imageSelectModal.show()">
         <b-icon icon="image"></b-icon>
@@ -63,19 +63,22 @@ export default {
     });
   },
   mounted() {
-    const iframeDocument = this.$refs.previewIframe.contentWindow.document;
-    for (let css of this.store.stylesheets) {
-      const link = document.createElement("link");
-      link.setAttribute("rel", "stylesheet");
-      link.setAttribute("type", "text/css");
-      link.setAttribute("href", `${this.store.basePath}/css/${css.fileName}`);
-      iframeDocument.head.appendChild(link);
-    }
-    this.previewElement = document.createElement("article");
-    this.previewElement.classList.add("content");
-    iframeDocument.body.appendChild(this.previewElement);
+    this.initPreview();
   },
   methods: {
+    initPreview() {
+      const iframeDocument = this.$refs.previewIframe.contentWindow.document;
+      for (let css of this.store.stylesheets) {
+        const link = document.createElement("link");
+        link.setAttribute("rel", "stylesheet");
+        link.setAttribute("type", "text/css");
+        link.setAttribute("href", `${this.store.basePath}/css/${css.fileName}`);
+        iframeDocument.head.appendChild(link);
+      }
+      this.previewElement = document.createElement("article");
+      this.previewElement.classList.add("content");
+      iframeDocument.body.appendChild(this.previewElement);
+    },
     async open() {
       this.shown = true;
       const content = await this.store.getContent(this.pageId);
@@ -140,6 +143,13 @@ export default {
   },
   watch: {
     "selectedSection.markdown"() {
+      if (
+        this.$refs.previewIframe.contentWindow.document.body.children[0] !==
+        this.previewElement
+      ) {
+        this.$refs.previewIframe.contentWindow.document.body.innerHTML = "";
+        this.initPreview();
+      }
       this.previewElement.innerHTML = marked(this.selectedSection.markdown);
     },
   },

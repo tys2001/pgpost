@@ -9,8 +9,6 @@ module.exports = (db) => {
         headerContent: {},
         bottomContent: {},
         footerContent: {},
-        category: {},
-        allCategories: [],
         relatedPages: [],
         setting: {},
         stylesheets: [],
@@ -18,7 +16,6 @@ module.exports = (db) => {
         isPublish: (req.query.publish === "true") ? true : false
       };
       data.setting = await db.getSetting({ uid: "tysworks", obj: { settingId: "base" } });
-      data.allCategories = await db.getCategories({ uid: "tysworks" });
       data.stylesheets = await db.getStylesheets({ uid: "tysworks" });
       data.page = await db.getPage({ uid: "tysworks", obj: { pageId: pageId } });
       if (!data.page) res.redirect('/404');
@@ -28,34 +25,40 @@ module.exports = (db) => {
       data.bottomContent = await db.getPageContent({ uid: "tysworks", obj: { pageId: "common-bottom" } });
       data.footerContent = await db.getPageContent({ uid: "tysworks", obj: { pageId: "common-footer" } });
 
-      for (let category of data.allCategories) {
-        if (category.categoryId === data.page.categoryId) {
-          data.category = category;
-        }
+      const allCategories = await db.getCategories({ uid: "tysworks" });
+      const categoryDict = {};
+      for (let category of allCategories) {
+        categoryDict[category.categoryId] = category.categoryName;
       }
+      data.page.categoryName = categoryDict[data.page.categoryId];
 
-      if (data.category.relation === "all_categories") {
-        for (let category of data.allCategories) {
-          if (category.relation === "same_categories") {
-            data.relatedPages.push({
-              categoryName: category.categoryName,
-              pages: await db.getPages({
-                uid: "tysworks",
-                obj: {
-                  categoryId: category.categoryId,
-                  status: "public"
-                }
-              })
-            });
+      if (data.page.link === "all_categories") {
+        const pages = await db.getPages({
+          uid: "tysworks",
+          obj: {
+            type: "post",
+            status: "published"
           }
+        });
+        categorizedPages = {};
+        for (let page of pages) {
+          if (!categorizedPages[page.categoryId]) categorizedPages[page.categoryId] = [];
+          categorizedPages[page.categoryId].push(page);
+        }
+        for (let categoryId in categorizedPages) {
+          data.relatedPages.push({
+            categoryName: categoryDict[categoryId],
+            pages: categorizedPages[categoryId]
+          });
         }
         data.relatedPages = data.relatedPages.sort((a, b) => b.pages.length - a.pages.length);
-      } else if (data.category.relation === "same_categories") {
+      } else if (data.page.link === "same_categories") {
         data.relatedPages = await db.getPages({
           uid: "tysworks",
           obj: {
-            categoryId: data.category.categoryId,
-            status: "public"
+            categoryId: data.page.categoryId,
+            type: "post",
+            status: "published"
           }
         });
         data.relatedPages = data.relatedPages.filter(page => page.pageId !== data.pageId);
@@ -69,7 +72,7 @@ module.exports = (db) => {
         urls: [],
       };
       const setting = await db.getSetting({ uid: "tysworks", obj: { settingId: "base" } });
-      const pages = await db.getPages({ uid: "tysworks", obj: { status: "public" } });
+      const pages = await db.getPages({ uid: "tysworks", obj: { status: "published" } });
       for (let page of pages) {
         if (page.pageId === "index") data.urls.push({ loc: `${setting.publishUrl}/` });
         else if (page.pageId === "404") continue;

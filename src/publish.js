@@ -9,7 +9,10 @@ module.exports = (db) => {
       for (let stylesheet of stylesheets) {
         publishUrls.push({ url: `/css/${stylesheet.fileName}`, path: `/css/${stylesheet.fileName}` });
       }
-      const pages = await db.getPages({ uid: "tysworks", obj: { status: "public" } });
+      const pages = [
+        ...await db.getPages({ uid: "tysworks", obj: { status: "published" } }),
+        ...await db.getPages({ uid: "tysworks", obj: { status: "noindex" } })
+      ]
       for (let page of pages) {
         if (page.pageId === "index") publishUrls.push({ url: `/?publish=true`, path: `/index.html` });
         else publishUrls.push({ url: `/${page.pageId}?publish=true`, path: `/${page.pageId}/index.html` });

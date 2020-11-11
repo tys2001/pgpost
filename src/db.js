@@ -54,10 +54,12 @@ module.exports = (config) => {
         where uid=$1\
         and ($2='' or obj->>'categoryId'=$2)\
         and ($3='' or obj->>'status'=$3)\
+        and ($4='' or obj->>'type'=$4)\
       ", [
         param.uid,
         param.obj.categoryId || "",
-        param.obj.status || ""
+        param.obj.status || "",
+        param.obj.type || ""
       ]);
       return rows.map(r => r.obj);
     },

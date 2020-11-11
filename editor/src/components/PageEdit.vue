@@ -1,6 +1,14 @@
 <template>
   <div>
     <div v-if="!draftItem">
+      <b-input-group prepend="タイプ">
+        <b-form-select v-model="filter.type">
+          <option value="">(指定なし)</option>
+          <option value="post">投稿</option>
+          <option value="page">ページ</option>
+          <option value="part">共通部品</option>
+        </b-form-select>
+      </b-input-group>
       <b-table
         :items="store.pages"
         :fields="fields"
@@ -10,6 +18,10 @@
         show-empty
         empty-text="ページがありません"
         hover
+        :filter="filter"
+        :filter-function="
+          (item, filter) => !filter.type || item.type === filter.type
+        "
       />
       <b-button @click="onClickAdd" variant="primary" block>新規作成</b-button>
     </div>
@@ -47,10 +59,25 @@
       <b-input-group prepend="概要">
         <b-input v-model="draftItem.description" />
       </b-input-group>
+      <b-input-group prepend="タイプ">
+        <b-form-select v-model="draftItem.type">
+          <option value="post">投稿</option>
+          <option value="page">ページ</option>
+          <option value="part">共通部品</option>
+        </b-form-select>
+      </b-input-group>
       <b-input-group prepend="状態">
         <b-form-select v-model="draftItem.status">
           <option value="draft">下書き</option>
-          <option value="public">公開</option>
+          <option value="published">公開</option>
+          <option value="noindex">公開（インデックスなし）</option>
+        </b-form-select>
+      </b-input-group>
+      <b-input-group prepend="リンク">
+        <b-form-select v-model="draftItem.link">
+          <option value="none">なし</option>
+          <option value="same_categories">関連記事を表示</option>
+          <option value="all_categories">全カテゴリの記事を表示</option>
         </b-form-select>
       </b-input-group>
       <b-input-group prepend="作成日">
@@ -95,8 +122,13 @@ export default {
               ? this.categoryDict[value].categoryName
               : "",
         },
+        { key: "type", label: "タイプ", sortable: true },
+        { key: "status", label: "状態", sortable: true },
       ],
       draftItem: null,
+      filter: {
+        type: "",
+      },
     };
   },
   mounted() {},

@@ -1,5 +1,5 @@
 <aside class="links">
-  <% if (data.category.relation === "all_categories") { %>
+  <% if (data.page.link === "all_categories") { %>
   <% for (let category of data.relatedPages) { %>
   <% if (category.pages.length > 0) { %>
   <div class="article-link-list-title"><%= category.categoryName %>の記事 (<%= category.pages.length %>)</div>
@@ -13,7 +13,7 @@
   </div>
   <% } %>
   <% } %>
-  <% } else if (data.category.relation === "same_categories") { %>
+  <% } else if (data.page.link === "same_categories") { %>
   <% if (data.relatedPages.length > 0) { %>
   <div class="article-link-list-title">関連記事</div>
   <div class="article-link-list responsive-grid-column">

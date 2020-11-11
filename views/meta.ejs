@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<% if (!data.isPublish) { %>
+<% if (data.page.status === "noindex" || !data.isPublish) { %>
 <meta name="robots" content="noindex">
 <% } %>
 <link rel="icon" href="/media/icon-32x32.png" sizes="32x32">
@@ -22,14 +22,14 @@
   content="<%= data.setting.publishUrl %><%= data.page.captionImage || '/media/icon-270x270.png' %>">
 <meta property="og:site_name" content="<%= data.setting.siteName %>">
 <meta property="og:locale" content="ja_JP">
-<% if (data.category.relation === "same_categories") { %>
+<% if (data.page.type === "post") { %>
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="<%= data.page.publishedDate %>T00:00:00+09:00">
 <meta property="article:modified_time" content="<%= data.page.modifiedDate %>T00:00:00+09:00">
 <% } else { %>
 <meta property="og:type" content="website">
 <% } %>
-<meta property="article:section" content="<%= data.category.categoryName %>">
+<meta property="article:section" content="<%= data.page.categoryName %>">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:description" content="<%= data.page.description %>">
 <meta name="twitter:title" content="<%= data.page.title %>">
