@@ -24,14 +24,6 @@ app.get('/', (req, res) => {
   rend.renderPage("index", req, res);
 });
 
-app.get('/test1', async (req, res) => {
-  res.send("aa");
-});
-
-app.get('/test2', async (req, res) => {
-  res.send(config);
-});
-
 app.get('/sitemap.xml', async (req, res) => {
   rend.renderSitemap(req, res);
 });
