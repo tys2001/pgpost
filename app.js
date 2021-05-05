@@ -24,6 +24,15 @@ app.get('/', (req, res) => {
   rend.renderPage("index", req, res);
 });
 
+app.get('/test1', async (req, res) => {
+  res.send("aa");
+});
+
+app.get('/test2', async (req, res) => {
+  console.log(process.env.DATABASE_URL);
+  res.send(process.env.DATABASE_URL);
+});
+
 app.get('/sitemap.xml', async (req, res) => {
   rend.renderSitemap(req, res);
 });
