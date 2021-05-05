@@ -29,8 +29,7 @@ app.get('/test1', async (req, res) => {
 });
 
 app.get('/test2', async (req, res) => {
-  console.log(process.env.DATABASE_URL);
-  res.send(process.env.DATABASE_URL);
+  res.send(config);
 });
 
 app.get('/sitemap.xml', async (req, res) => {
